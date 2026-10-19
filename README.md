@@ -16,6 +16,8 @@ Open source. Zero ads. 100% Onboard. No root required.
 
 [**Install**](#-quick-install-2-minutes) · [**Features**](#-what-you-get) · [**Customize**](#%EF%B8%8F-make-it-yours-on-tv-customization) · [**Roadmap**](ROADMAP.md) · [**How It Works**](#%EF%B8%8F-how-it-works)
 
+**🇺🇸 English** · [**🇧🇷 Português**](#free-my-tv-para-lg-webos)
+
 <br>
 
 <img src="docs/assets/preview.png" width="900" alt="Free My TV on LG webOS: Frosted glass app shelf, dynamic hero preview, live weather, and trending movies">
@@ -145,3 +147,156 @@ free-my-webos/
 - Weather data by [Open-Meteo](https://open-meteo.com/) · Movie metadata by [TMDB](https://www.themoviedb.org/) & [TVMaze](https://www.tvmaze.com/).
 
 Released under the [MIT License](LICENSE). Fork it, vibe code it, make your TV yours.
+
+---
+---
+
+<div align="center">
+
+<img src="docs/assets/icon-512.png" width="108" alt="Logo do Free My TV">
+
+# Free My TV (para LG webOS)
+
+**Uma home screen rápida, sem anúncios e a 60fps para Smart TVs LG.**
+
+Os apps de streaming que você realmente usa em uma prateleira de vidro fosco, previsão do tempo ao vivo que acompanha o pôr do sol, e sugestões de filmes e séries em alta.<br>
+Código aberto. Zero anúncios. 100% independente na TV. Sem necessidade de root.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-0a84ff.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/LG_webOS-3.0_to_24+-30d158.svg)](#)
+[![Performance](https://img.shields.io/badge/Render-60_FPS_Native-ff9f0a.svg)](#)
+[![No Root](https://img.shields.io/badge/Root-Not_Required-brightgreen.svg)](#)
+
+[**Instalar**](#-instalação-rápida-2-minutos) · [**Recursos**](#-o-que-você-ganha) · [**Personalizar**](#%EF%B8%8F-deixe-do-seu-jeito-personalização-na-tv) · [**Roadmap**](ROADMAP.md) · [**Como Funciona**](#%EF%B8%8F-como-funciona)
+
+[**🇺🇸 English**](#free-my-tv-for-lg-webos) · **🇧🇷 Português**
+
+<br>
+
+<img src="docs/assets/preview.png" width="900" alt="Free My TV no LG webOS: prateleira de apps em vidro fosco, preview dinâmico, clima ao vivo e filmes em alta">
+
+</div>
+
+---
+
+## ⚡ Por Que Isso Existe
+
+O webOS moderno da LG (especialmente webOS 6, 22, 23 e 24) substituiu a clássica barra de cards rápida por um portal de tela cheia lento e cheio de:
+- Banners de anúncios automáticos, promoções de compras e lixo de "Em Alta".
+- Travamentos de 3 a 5 segundos toda vez que você aperta o botão Home.
+- Telemetria em segundo plano e Reconhecimento Automático de Conteúdo (ACR).
+
+**Free My TV para webOS** traz a filosofia do [simbasjungles/free-my-tv](https://github.com/simbasjungles/free-my-tv) e da Apple tvOS nativamente para as TVs LG — te dando um painel de vidro instantâneo e limpo que roda direto na memória flash interna da sua TV.
+
+---
+
+## ✨ O Que Você Ganha
+
+- **🚫 Zero Anúncios. Nunca.** Sem linhas patrocinadas, sem banners promocionais, sem widgets de compras.
+- **🧊 Prateleira de Apps em Vidro Fosco.** Seus apps de streaming e entradas HDMI favoritos em destaque, abrindo nativamente em ~100ms via o barramento Luna do webOS.
+- **⚙️ Personalizador de Prateleira na Tela.** Detecta automaticamente os apps instalados na sua TV LG para você escolher quais aparecem na prateleira usando o controle remoto.
+- **🌅 Temas Dinâmicos de Pôr do Sol e OLED.** Conecta ao Open-Meteo para mostrar o clima local ao vivo e muda automaticamente o fundo de *Azul Diurno* para *Âmbar do Pôr do Sol* até *Meia-Noite Profunda* (além de um modo *Preto OLED Puro*).
+- **🎬 Sugestões em Alta ao Vivo.** Sugestões atualizadas de filmes, séries e animes com descrições dinâmicas — usando sua chave TMDB opcional ou nosso feed ao vivo sem necessidade de chave.
+- **🎮 Suporte Completo ao Magic Remote e D-Pad.** Aponte e clique com o cursor do Magic Remote da LG, ou navegue pelos cards com as setas direcionais e a roda de rolagem.
+- **💻 100% Independente na TV.** Instalado como um pacote `.ipk` nativo na sua TV. Seu computador **não** precisa ficar ligado.
+- **🛡️ Seguro e Reversível.** Funciona em TVs de fábrica sem root via o Developer Mode oficial da LG (ou Homebrew Channel). Sua home screen de fábrica fica intocada.
+
+---
+
+## 📊 LG webOS de Fábrica vs. Free My TV
+
+| Métrica / Recurso | LG webOS 24 de Fábrica | Free My TV (webOS) |
+|---|---|---|
+| **Anúncios e Banners Patrocinados** | ❌ Mais de 70% da tela | ✅ **0% (Totalmente Sem Anúncios)** |
+| **Tempo de Carregamento Frio** | ❌ 3,5 a 5,0 segundos | ✅ **< 0,2 segundos** |
+| **Taxa de Quadros** | ❌ Quedas de frame frequentes | ✅ **60 FPS Travados** |
+| **Amigável contra Burn-in de OLED** | ❌ Banners de anúncio estáticos e claros | ✅ **Vidro Escuro e Modo OLED Puro** |
+| **PC Necessário Após a Instalação** | N/A | ✅ **Não (Roda 100% na TV)** |
+| **Root Necessário** | N/A | ✅ **Não (Dev Mode Oficial)** |
+
+---
+
+## 🚀 Instalação Rápida (2 Minutos)
+
+Tudo que você precisa é de uma Smart TV LG (webOS 3.0+) e um computador na mesma rede Wi-Fi para a instalação inicial de 2 minutos.
+
+### Passo 1: Ativar o Developer Mode na TV
+1. Abra a **LG Content Store** na sua TV, procure por **`Developer Mode`** e instale.
+2. Abra o **Developer Mode**, entre com sua conta gratuita de desenvolvedor LG ([webostv.developer.lge.com](https://webostv.developer.lge.com)) e mude o **Dev Mode Status** para **ON**.
+3. Depois da TV reiniciar, abra o **Developer Mode** de novo e ative o **Key Server**. Anote o **Endereço IP** e a **Senha** de 6 caracteres mostrados na tela.
+
+### Passo 2A: Instalação Automática em Um Comando (Recomendado)
+Rode nosso instalador Python automatizado — ele descobre sua TV na rede, pareia a chave SSH, empacota o app e instala:
+
+```bash
+git clone https://github.com/danielthejoker18/FreeMyTvWebOS.git
+cd FreeMyTvWebOS
+python scripts/install.py
+```
+
+### Passo 2B: Instalação via Interface Gráfica (webOS Dev Manager)
+1. Instale o [webOS Dev Manager](https://github.com/webosbrew/dev-manager-desktop/releases) (`winget install webosbrew.webOSDevManager` no Windows).
+2. Conecte sua TV usando o IP e a Senha.
+3. Baixe o [`dist/org.webos.freemytv_1.0.0_all.ipk`](dist/org.webos.freemytv_1.0.0_all.ipk) e clique em **Install .ipk**.
+
+> [!TIP]
+> **Transforme em Sua Tecla de Acesso Rápido (1 Segundo):**
+> Dentro do **Free My TV** na sua TV, **segure o número `1`** (ou segure `0` para abrir o Acesso Rápido) no Magic Remote e atribua o **Free My TV** à tecla **`1`**. Agora, segurar **`1`** de qualquer lugar da TV te leva direto para o seu painel de vidro limpo em meio segundo!
+
+---
+
+## ⚙️ Deixe do Seu Jeito (Personalização na TV)
+
+Clique no botão **⚙️ Customize** no canto superior direito do painel usando o controle remoto:
+
+| Configuração | O Que Faz |
+|---|---|
+| **Seletor de Prateleira de Apps** | Descobre automaticamente os apps instalados na sua TV (`listLaunchPoints`) para você escolher até 8 favoritos para sua prateleira de vidro. |
+| **Nome da Cidade** | Digite qualquer cidade (ex.: `São Paulo`, `Lisboa`, `Nova York`) para clima ao vivo via Open-Meteo e horários precisos de pôr do sol, ou deixe em branco para geolocalização automática por IP. |
+| **Modo de Tema** | Escolha entre `Automático (Segue o Pôr do Sol)`, `Meia-Noite Profunda`, `Preto OLED Puro`, ou `Azul Diurno`. |
+| **Chave da API do TMDB** | Cole uma [chave gratuita da API do TMDB](https://www.themoviedb.org/settings/api) para ver filmes e séries em alta da semana ao vivo, ou deixe em branco para usar o feed ao vivo popular embutido (sem necessidade de chave). |
+
+---
+
+## 🗺️ Roadmap e Próximos Passos
+
+Veja o [ROADMAP.md](ROADMAP.md) completo para as especificações técnicas detalhadas.
+
+- [x] **v1.0 — Motor de Vidro 60fps:** Abertura nativa de apps via Luna, navegação espacial com Magic Remote + D-Pad, instalador em 1 comando.
+- [x] **v1.1 — Clima ao Vivo, Temas de Pôr do Sol e Personalizador na TV:** Integração com Open-Meteo, TMDB + feed de tendências sem chave, e editor interativo da prateleira de apps.
+- [ ] **v1.2 — Deep-Linking e Gaveta Rápida (Em Breve 🚧):** Deep-linking direto para filmes/episódios no Netflix/YouTube/Plex, reordenação de cards via D-Pad, extração nativa de ícones de TV, e suporte a múltiplos idiomas (`EN`, `PT-BR`, `ES`, `DE`, `FR`).
+- [ ] **v1.3 — Proteção de Tela OLED e Wake-on-LAN 📅:** Protetor de tela ambiente 4K com deslocamento de pixels embutido e envio automático de pacotes Wake-on-LAN para acordar seu PC gamer ao selecionar o HDMI.
+- [ ] **v1.4 — Repositório Oficial no Homebrew e Atalho do Botão Home 🚀:** Instalação em um clique pela loja na TV do `webosbrew.org` e vínculo opcional do botão físico Home para TVs com root.
+- [ ] **v2.0 — Companheiro QR no Celular e Hub Smart Home 🌟:** Escaneie um QR code para configurar pelo celular e disparar webhooks de iluminação do Home Assistant.
+
+---
+
+## 🛠️ Como Funciona
+
+```
+free-my-webos/
+├── app/
+│   ├── appinfo.json       # Manifesto do pacote webOS e permissões
+│   ├── index.html         # UI de vidro 60fps autocontida, clima, TMDB e ponte com o Luna
+│   ├── webOSTV.js         # Biblioteca oficial de serviços JavaScript do LG webOS
+│   └── assets/            # Ícones e telas de splash do app
+├── dist/
+│   └── org.webos.freemytv_1.0.0_all.ipk
+├── docs/                  # Preview ao vivo e recursos visuais
+└── scripts/
+    ├── build.py           # Compilador .ipk multiplataforma (ares-package + fallback em Python puro)
+    └── install.py         # Descoberta de TV via SSDP, pareamento de chave SSH e instalador via Luna
+```
+
+- **Zero Dependência de Frameworks:** Escrito em HTML5, CSS3 e JavaScript puro acelerado por hardware. O pacote `.ipk` inteiro tem menos de **80 KB**.
+- **IPC Direto pelo Barramento Luna:** Chama `luna://com.webos.applicationManager/launch` diretamente do motor web local da TV (com fallback automático para `luna://org.webosbrew.hbchannel.service/exec`).
+
+---
+
+## 🤝 Créditos e Licença
+
+- Inspirado por [simbasjungles/free-my-tv](https://github.com/simbasjungles/free-my-tv) (para Google TV).
+- Feito para a comunidade [webOS Homebrew](https://webosbrew.org/) e de TVs LG.
+- Dados de clima por [Open-Meteo](https://open-meteo.com/) · Metadados de filmes por [TMDB](https://www.themoviedb.org/) & [TVMaze](https://www.tvmaze.com/).
+
+Lançado sob a [Licença MIT](LICENSE). Faça um fork, modifique como quiser, deixe a TV do seu jeito.
