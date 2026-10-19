@@ -1,68 +1,77 @@
-# Free My TV (for LG webOS)
-
 <div align="center">
+
+<img src="docs/assets/icon-512.png" width="108" alt="Free My TV Logo">
+
+# Free My TV (for LG webOS)
 
 **A fast, ad-free 60fps home screen for LG Smart TVs.**
 
-The apps you actually use on a frosted glass shelf, live weather, and trending cinema picks.<br>
-Zero ads. Zero bloat. 100% Onboard. No root required.
+The streaming apps you actually use on a frosted glass shelf, live weather that follows the sunset, and trending cinema picks.<br>
+Open source. Zero ads. 100% Onboard. No root required.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/webOS-3.0_to_24-brightgreen.svg)]()
-[![Performance](https://img.shields.io/badge/FPS-60fps_Native-orange.svg)]()
-[![No Root](https://img.shields.io/badge/Root-Not_Required-success.svg)]()
+[![License: MIT](https://img.shields.io/badge/License-MIT-0a84ff.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/LG_webOS-3.0_to_24+-30d158.svg)](#)
+[![Performance](https://img.shields.io/badge/Render-60_FPS_Native-ff9f0a.svg)](#)
+[![No Root](https://img.shields.io/badge/Root-Not_Required-brightgreen.svg)](#)
+
+[**Install**](#-quick-install-2-minutes) · [**Features**](#-what-you-get) · [**Customize**](#%EF%B8%8F-make-it-yours-on-tv-customization) · [**Roadmap**](ROADMAP.md) · [**How It Works**](#%EF%B8%8F-how-it-works)
+
+<br>
+
+<img src="docs/assets/preview.png" width="900" alt="Free My TV on LG webOS: Frosted glass app shelf, dynamic hero preview, live weather, and trending movies">
 
 </div>
 
 ---
 
-## 📺 Why this exists
+## ⚡ Why This Exists
 
-Modern LG webOS (especially webOS 6, 22, 23, and 24) replaced the iconic, lightweight bottom card bar with a laggy, full-screen portal filled with:
-- Auto-playing banner video ads & sponsored shopping rows.
-- Sluggish 3–5 second boot delays every time you press Home.
-- Heavy background telemetry and ACR (Automatic Content Recognition).
+Modern LG webOS (especially webOS 6, 22, 23, and 24) replaced the classic, snappy bottom card bar with a sluggish full-screen portal packed with:
+- Auto-playing banner ads, shopping promotions, and "Trending Now" bloatware.
+- 3 to 5 second lag spikes every time you press the Home button.
+- Background telemetry and Automatic Content Recognition (ACR).
 
-**Free My TV for webOS** gives you back an instantaneous, clean, beautiful TV experience inspired by Apple tvOS and [free-my-tv for Google TV](https://github.com/simbasjungles/free-my-tv).
-
----
-
-## ✨ Features
-
-- **🚫 Zero Ads:** No banners, no auto-playing promos, no sponsored rows. Never.
-- **🧊 Frosted Glass Shelf:** Your favorite apps front-and-center (YouTube, Netflix, Plex, Crunchyroll, Globoplay, HDMI 1/2/3, Browser, Homebrew).
-- **⚡ 60 FPS Native Performance:** Boots in milliseconds, responds instantly to remote input.
-- **🎬 Trending Picks (TMDB):** Fresh cinema and series recommendations with dynamic Top Shelf preview descriptions.
-- **⛅ Live Weather & Sunset Clock:** Real-time clock, date, and local weather forecasts.
-- **🎮 Full Magic Remote & D-Pad Support:** Seamlessly navigate with the Magic Remote pointer or the physical directional arrows.
-- **🛡️ 100% Safe & Reversible:** Works with official LG Developer Mode or Homebrew Channel. No root required. One click returns to the factory screen.
-- **💻 Completely Independent:** Runs 100% onboard from the TV's internal flash storage. Your computer does **not** need to stay on.
+**Free My TV for webOS** brings the philosophy of [simbasjungles/free-my-tv](https://github.com/simbasjungles/free-my-tv) and Apple tvOS natively to LG televisions—giving you an instantaneous, clean glass dashboard that lives right on your TV's internal flash memory.
 
 ---
 
-## 📊 Comparison
+## ✨ What You Get
 
-| Feature | Stock LG webOS 24 Home | Free My TV |
+- **🚫 Zero Ads. Ever.** No sponsored rows, no banner promos, no shopping widgets.
+- **🧊 Frosted Glass App Shelf.** Your favorite streaming apps and HDMI inputs front-and-center, launching natively in ~100ms via the webOS Luna bus.
+- **⚙️ On-Screen Shelf Customizer.** Automatically detects installed apps on your LG TV so you can toggle which ones appear on your shelf using your remote.
+- **🌅 Dynamic Sunset & OLED Themes.** Connects to Open-Meteo to show live local weather and automatically shifts your background from *Daylight Blue* to *Sunset Amber* to *Deep Midnight* (plus a *Pure OLED Black* mode).
+- **🎬 Live Trending Picks.** Fresh movie, series, and anime picks with dynamic Top Shelf descriptions—powered by your optional TMDB key or our built-in zero-key live feed.
+- **🎮 Full Magic Remote & D-Pad Support.** Point and click with the LG Magic Remote cursor, or fly across tiles with the directional arrow keys and scroll wheel.
+- **💻 100% Onboard & Independent.** Installed as a native `.ipk` package on your TV. Your computer does **not** need to stay on.
+- **🛡️ Safe & Reversible.** Works on stock unrooted TVs via official LG Developer Mode (or Homebrew Channel). Your factory home screen is untouched.
+
+---
+
+## 📊 Stock LG webOS Home vs. Free My TV
+
+| Metric / Feature | Stock LG webOS 24 Home | Free My TV (webOS) |
 |---|---|---|
-| **Ad Banners & Promos** | ❌ Full-screen sponsored ads | ✅ **Zero ads** |
-| **Boot & Load Time** | ❌ 3.5 – 5.0 seconds | ✅ **< 0.2 seconds** |
-| **Layout** | ❌ 80% sponsored content | ✅ **100% your media & apps** |
-| **Animations** | ❌ Stutters & lag | ✅ **Silky 60 fps** |
-| **PC Required** | N/A | ✅ **No (runs onboard)** |
-| **Root Required** | N/A | ✅ **No (standard dev mode)** |
+| **Sponsored Ads & Banners** | ❌ 70%+ of screen real estate | ✅ **0% (Completely Ad-Free)** |
+| **Cold Load Time** | ❌ 3.5 – 5.0 seconds | ✅ **< 0.2 seconds** |
+| **Frame Rate** | ❌ Frequent UI frame drops | ✅ **Locked 60 FPS** |
+| **OLED Burn-in Friendly** | ❌ Bright static ad banners | ✅ **Dark Glass & Pure OLED Mode** |
+| **PC Required After Install** | N/A | ✅ **No (Runs 100% Onboard)** |
+| **Root Required** | N/A | ✅ **No (Official Dev Mode)** |
 
 ---
 
 ## 🚀 Quick Install (2 Minutes)
 
-### Prerequisites
-1. An LG Smart TV running webOS (webOS 3.0+).
-2. Install the free official **Developer Mode** app from the LG Content Store on your TV.
-3. Launch Developer Mode on the TV, log in, and toggle **Dev Mode Status** to **ON** and **Key Server** to **ON**. Note the 6-character Passphrase.
+All you need is an LG Smart TV (webOS 3.0+) and a computer on the same Wi-Fi for the initial 2-minute install.
 
-### Option A: Automatic One-Line Install (Recommended)
+### Step 1: Enable Developer Mode on the TV
+1. Open the **Apps / LG Content Store** on your TV, search for **`Developer Mode`**, and install it.
+2. Open **Developer Mode**, sign in with your free LG Developer account ([webostv.developer.lge.com](https://webostv.developer.lge.com)), and switch **Dev Mode Status** to **ON**.
+3. After the TV restarts, open **Developer Mode** again and toggle **Key Server** to **ON**. Note the **IP Address** and 6-character **Passphrase** on screen.
 
-Clone the repository and run the automated installer:
+### Step 2A: Automated One-Command Install (Recommended)
+Run our automated Python installer—it discovers your TV on the network, pairs the SSH key, packages the app, and installs it:
 
 ```bash
 git clone https://github.com/danielthejoker18/FreeMyTvWebOS.git
@@ -70,47 +79,69 @@ cd FreeMyTvWebOS
 python scripts/install.py
 ```
 
-The script will automatically detect your TV on the local network, fetch the dev authorization, build the `.ipk`, and install it onto your TV flash memory.
+### Step 2B: GUI Install via webOS Dev Manager
+1. Install [webOS Dev Manager](https://github.com/webosbrew/dev-manager-desktop/releases) (`winget install webosbrew.webOSDevManager` on Windows).
+2. Connect your TV using the IP and Passphrase.
+3. Download [`dist/org.webos.freemytv_1.0.0_all.ipk`](dist/org.webos.freemytv_1.0.0_all.ipk) and click **Install .ipk**.
+
+> [!TIP]
+> **Make It Your 1-Second Home Key (Quick Access):**
+> While inside **Free My TV** on your TV, **press and hold number `1`** (or hold `0` to open Quick Access) on your Magic Remote and assign **Free My TV** to key **`1`**. Now, holding **`1`** from anywhere on your TV jumps straight into your clean glass hub in half a second!
 
 ---
 
-### Option B: webOS Dev Manager (GUI)
+## ⚙️ Make It Yours (On-TV Customization)
 
-1. Download [webOS Dev Manager](https://github.com/webosbrew/dev-manager-desktop/releases) (or `winget install webOS.DevManager`).
-2. Add your TV using the IP and Passphrase.
-3. Download the pre-built `org.webos.freemytv_1.0.0_all.ipk` from our [Releases](https://github.com/danielthejoker18/FreeMyTvWebOS/releases).
-4. Click **Install .ipk** in Dev Manager. Done!
+Click the **⚙️ Customize** button in the top-right corner of the dashboard using your remote:
+
+| Setting | What It Does |
+|---|---|
+| **App Shelf Selector** | Auto-discovers apps installed on your TV (`listLaunchPoints`) so you can pick up to 8 favorites for your glass dock. |
+| **City Name** | Type any city (e.g., `São Paulo`, `Lisbon`, `New York`) for live Open-Meteo weather and accurate local sunset times, or leave blank for automatic IP geolocation. |
+| **Theme Mode** | Choose `Auto (Follows Sunset)`, `Deep Midnight`, `Pure OLED Black`, or `Daylight Blue`. |
+| **TMDB API Key** | Paste a free [TMDB API Key](https://www.themoviedb.org/settings/api) for live weekly trending movies & shows, or leave empty to use the built-in zero-key live popular feed. |
 
 ---
 
-## ⚡ Pro-Tip: The One-Second Launch (Quick Access)
+## 🗺️ Roadmap & Things to Come
 
-Make Free My TV your permanent default home screen:
+See the full [ROADMAP.md](ROADMAP.md) for detailed technical specifications.
 
-1. Launch **Free My TV** on your TV.
-2. On your Magic Remote, **press and hold button `1`** (or `0` for the Quick Access menu).
-3. Select **Add Current App**.
-4. Now, whenever you power on the TV or want to switch apps, **just hold down `1` on the remote** to fly straight into your clean glass dashboard!
+- [x] **v1.0 — Core 60fps Glass Engine:** Native Luna app launching, Magic Remote + D-Pad spatial nav, 1-command installer.
+- [x] **v1.1 — Live Weather, Sunset Themes & On-TV Customizer:** Open-Meteo integration, TMDB + zero-key live trending feed, and interactive app shelf editor.
+- [ ] **v1.2 — Deep-Linking & Quick Drawer (Next Up 🚧):** Direct movie/episode deep-linking into Netflix/YouTube/Plex, D-Pad tile reordering, native TV icon extraction, and multi-language support (`EN`, `PT-BR`, `ES`, `DE`, `FR`).
+- [ ] **v1.3 — OLED Care Screensaver & Wake-on-LAN 📅:** Built-in pixel-shifting 4K ambient screensaver and automatic Wake-on-LAN packet sender to wake your gaming PC when selecting HDMI.
+- [ ] **v1.4 — Official Homebrew Repo & Home Button Hook 🚀:** One-click installation from the `webosbrew.org` on-TV store and optional physical Home button binding for rooted TVs.
+- [ ] **v2.0 — Smartphone QR Companion & Smart Home Hub 🌟:** Scan a QR code to configure settings from your phone and trigger Home Assistant lighting webhooks.
 
 ---
 
 ## 🛠️ How It Works
 
-- **Native Web Engine:** Built with HTML5, CSS3 (`backdrop-filter: blur()`), and JavaScript compiled into a standard webOS `.ipk` package.
-- **Luna Bus Integration:** When you click an app tile, it communicates directly with webOS's internal application manager (`luna://com.webos.applicationManager/launch`) for 100ms native app switching.
-- **Dynamic Twilight Mesh:** Follows daytime and evening ambient color palettes to reduce eye strain in dark rooms.
+```
+free-my-webos/
+├── app/
+│   ├── appinfo.json       # webOS package manifest & permissions
+│   ├── index.html         # Self-contained 60fps Glass UI, Weather, TMDB & Luna bridge
+│   ├── webOSTV.js         # Official LG webOS JavaScript service library
+│   └── assets/            # App icons & splash screens
+├── dist/
+│   └── org.webos.freemytv_1.0.0_all.ipk
+├── docs/                  # Live preview & visual assets
+└── scripts/
+    ├── build.py           # Cross-platform .ipk compiler (ares-package + pure Python fallback)
+    └── install.py         # Automated SSDP TV discovery, SSH key pairing & Luna installer
+```
+
+- **Zero Framework Bloat:** Written in pure, hardware-accelerated HTML5, CSS3, and vanilla JavaScript. The entire `.ipk` package is under **80 KB**.
+- **Direct Luna Bus IPC:** Calls `luna://com.webos.applicationManager/launch` directly from the TV's local web engine (with automatic fallback to `luna://org.webosbrew.hbchannel.service/exec`).
 
 ---
 
-## 🤝 Credits & Acknowledgements
+## 🤝 Credits & License
 
-- Inspired by the vision of [simbasjungles/free-my-tv](https://github.com/simbasjungles/free-my-tv) for Google TV.
-- Powered by the [webOS Homebrew](https://webosbrew.org/) and [webOS OSE](https://www.webosose.org/) open-source community.
-- Movie and TV metadata provided by [TMDB](https://www.themoviedb.org/).
-- Weather data provided by [Open-Meteo](https://open-meteo.com/).
+- Inspired by [simbasjungles/free-my-tv](https://github.com/simbasjungles/free-my-tv) (for Google TV).
+- Built for the [webOS Homebrew](https://webosbrew.org/) and LG TV community.
+- Weather data by [Open-Meteo](https://open-meteo.com/) · Movie metadata by [TMDB](https://www.themoviedb.org/) & [TVMaze](https://www.tvmaze.com/).
 
----
-
-## 📄 License
-
-[MIT License](LICENSE) © 2026 Daniel & Contributors. Open source. Fork it, customize it, enjoy your TV.
+Released under the [MIT License](LICENSE). Fork it, vibe code it, make your TV yours.
