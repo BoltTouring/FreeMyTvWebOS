@@ -65,8 +65,8 @@ Modern LG webOS (especially webOS 6, 22, 23, and 24) replaced the iconic, lightw
 Clone the repository and run the automated installer:
 
 ```bash
-git clone https://github.com/daniel/free-my-webos.git
-cd free-my-webos
+git clone https://github.com/danielthejoker18/FreeMyTvWebOS.git
+cd FreeMyTvWebOS
 python scripts/install.py
 ```
 
@@ -78,7 +78,7 @@ The script will automatically detect your TV on the local network, fetch the dev
 
 1. Download [webOS Dev Manager](https://github.com/webosbrew/dev-manager-desktop/releases) (or `winget install webOS.DevManager`).
 2. Add your TV using the IP and Passphrase.
-3. Download the pre-built `org.webos.freemytv_1.0.0_all.ipk` from our [Releases](https://github.com/daniel/free-my-webos/releases).
+3. Download the pre-built `org.webos.freemytv_1.0.0_all.ipk` from our [Releases](https://github.com/danielthejoker18/FreeMyTvWebOS/releases).
 4. Click **Install .ipk** in Dev Manager. Done!
 
 ---
