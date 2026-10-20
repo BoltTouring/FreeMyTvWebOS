@@ -6,6 +6,7 @@ Packages the webOS application into a distributable .ipk file
 
 import os
 import sys
+import json
 import shutil
 import subprocess
 
@@ -13,10 +14,19 @@ REPO_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 APP_DIR = os.path.join(REPO_DIR, "app")
 DIST_DIR = os.path.join(REPO_DIR, "dist")
 
+def read_appinfo():
+    with open(os.path.join(APP_DIR, "appinfo.json"), "r", encoding="utf-8") as f:
+        info = json.load(f)
+    return info["id"], info["version"]
+
+def ipk_filename(app_id, version):
+    return f"{app_id}_{version}_all.ipk"
+
 def build():
     os.makedirs(DIST_DIR, exist_ok=True)
+    app_id, version = read_appinfo()
     print(f"[*] Packaging Free My TV from {APP_DIR}...")
-    
+
     # Check if ares-package is available
     has_ares = shutil.which("ares-package") is not None
     if has_ares:
@@ -34,8 +44,8 @@ def build():
     import tarfile
     import io
     
-    control_content = """Package: org.webos.freemytv
-Version: 1.0.0
+    control_content = f"""Package: {app_id}
+Version: {version}
 Section: misc
 Priority: optional
 Architecture: all
@@ -57,7 +67,7 @@ Description: A fast, ad-free 60fps home screen for LG webOS TVs.
             for file in files:
                 full_p = os.path.join(root, file)
                 rel_p = os.path.relpath(full_p, APP_DIR)
-                dest_p = f"/usr/palm/applications/org.webos.freemytv/{rel_p.replace(os.sep, '/')}"
+                dest_p = f"/usr/palm/applications/{app_id}/{rel_p.replace(os.sep, '/')}"
                 tar.add(full_p, arcname=dest_p)
     data_bytes = data_buf.getvalue()
 
@@ -65,7 +75,7 @@ Description: A fast, ad-free 60fps home screen for LG webOS TVs.
     debian_binary = b"2.0\n"
 
     # 4. Standard ar archive
-    ipk_path = os.path.join(DIST_DIR, "org.webos.freemytv_1.0.0_all.ipk")
+    ipk_path = os.path.join(DIST_DIR, ipk_filename(app_id, version))
     with open(ipk_path, "wb") as f:
         f.write(b"!<arch>\n")
         def write_ar_entry(name, data):

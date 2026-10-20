@@ -6,13 +6,18 @@ Automates discovery, pairing, and installation onto your LG Smart TV
 
 import os
 import sys
+import json
 import socket
 import urllib.request
 import subprocess
 import shutil
 
 REPO_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DIST_IPK = os.path.join(REPO_DIR, "dist", "org.webos.freemytv_1.0.0_all.ipk")
+
+with open(os.path.join(REPO_DIR, "app", "appinfo.json"), "r", encoding="utf-8") as _f:
+    _appinfo = json.load(_f)
+APP_ID = _appinfo["id"]
+DIST_IPK = os.path.join(REPO_DIR, "dist", f"{APP_ID}_{_appinfo['version']}_all.ipk")
 
 def discover_lg_tv():
     print("[*] Scanning local network for LG webOS TV...")
@@ -93,12 +98,12 @@ def install_app(tv_ip, passphrase=None):
         return False
 
     print("[*] Installing package on TV...")
-    install_cmd = 'luna-send-pub -i -u luna://com.webos.appInstallService/dev/install \'{"id":"org.webos.freemytv","ipkUrl":"/media/developer/temp/app.ipk","subscribe":true}\''
+    install_cmd = f'luna-send-pub -i -u luna://com.webos.appInstallService/dev/install \'{{"id":"{APP_ID}","ipkUrl":"/media/developer/temp/app.ipk","subscribe":true}}\''
     ssh_cmd = f'ssh {ssh_opts} -p 9922 -i "{dec_key}" prisoner@{tv_ip} "{install_cmd}"'
     subprocess.run(ssh_cmd, shell=True)
 
     print("[*] Launching Free My TV...")
-    launch_cmd = 'luna-send-pub -i -u luna://com.webos.applicationManager/launch \'{"id":"org.webos.freemytv"}\''
+    launch_cmd = f'luna-send-pub -i -u luna://com.webos.applicationManager/launch \'{{"id":"{APP_ID}"}}\''
     subprocess.run(f'ssh {ssh_opts} -p 9922 -i "{dec_key}" prisoner@{tv_ip} "{launch_cmd}"', shell=True)
 
     print("\n[+] SUCCESS! Free My TV is installed and running on your LG TV! Enjoy! 🎉")
