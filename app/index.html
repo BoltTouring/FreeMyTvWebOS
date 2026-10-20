@@ -1309,7 +1309,7 @@
                             webOS.service.request("luna://org.webosbrew.hbchannel.service", {
                                 method: "exec",
                                 parameters: {
-                                    command: "luna-send-pub -i -u luna://com.webos.applicationManager/launch '{\"id\":\"" + appId + "\"}'"
+                                    command: "luna-send-pub -n 1 luna://com.webos.applicationManager/launch '{\"id\":\"" + appId + "\"}'"
                                 }
                             });
                         }

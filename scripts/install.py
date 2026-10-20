@@ -12,6 +12,11 @@ import urllib.request
 import subprocess
 import shutil
 
+# Windows' default console codepage can't encode the emoji in the success
+# message below; UTF-8 output works on every platform this script runs on.
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8')
+
 REPO_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 with open(os.path.join(REPO_DIR, "app", "appinfo.json"), "r", encoding="utf-8") as _f:
@@ -90,21 +95,46 @@ def install_app(tv_ip, passphrase=None):
         print("[+] SSH Key saved & decrypted successfully.")
 
     print(f"[*] Uploading Free My TV to TV ({tv_ip})...")
-    ssh_opts = "-o StrictHostKeyChecking=no -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa"
-    scp_cmd = f'scp {ssh_opts} -P 9922 -i "{dec_key}" "{DIST_IPK}" prisoner@{tv_ip}:/media/developer/temp/app.ipk'
-    res = subprocess.run(scp_cmd, shell=True)
+    # List-form args (no shell=True) throughout: on Windows, shell=True runs
+    # the command through cmd.exe regardless of which shell launched Python,
+    # and cmd.exe mangles the embedded double quotes in the JSON payloads
+    # below before ssh.exe ever sees them. Passing argv as a list sidesteps
+    # every local shell's quoting rules; the single remote command string
+    # still reaches the TV's real POSIX shell exactly as written.
+    ssh_opts = ["-o", "StrictHostKeyChecking=no", "-o", "HostKeyAlgorithms=+ssh-rsa", "-o", "PubkeyAcceptedKeyTypes=+ssh-rsa"]
+    scp_args = ["scp", *ssh_opts, "-P", "9922", "-i", dec_key, DIST_IPK, f"prisoner@{tv_ip}:/media/developer/temp/app.ipk"]
+    res = subprocess.run(scp_args)
     if res.returncode != 0:
         print("[!] SCP upload failed.")
         return False
 
+    # luna-send-pub silently prints nothing at all without a controlling TTY
+    # (ssh -tt), and dev/install streams ~15-20 progress replies before the
+    # final "installed" status, so a generous -n bound is needed. It's also
+    # capped with `timeout` because luna-send-pub keeps the SSH session open
+    # waiting for more replies even once the service stops sending any.
     print("[*] Installing package on TV...")
-    install_cmd = f'luna-send-pub -i -u luna://com.webos.appInstallService/dev/install \'{{"id":"{APP_ID}","ipkUrl":"/media/developer/temp/app.ipk","subscribe":true}}\''
-    ssh_cmd = f'ssh {ssh_opts} -p 9922 -i "{dec_key}" prisoner@{tv_ip} "{install_cmd}"'
-    subprocess.run(ssh_cmd, shell=True)
+    install_payload = json.dumps({"id": APP_ID, "ipkUrl": "/media/developer/temp/app.ipk", "subscribe": True})
+    install_remote_cmd = f"timeout 45 luna-send-pub -n 30 luna://com.webos.appInstallService/dev/install '{install_payload}'"
+    install_args = ["ssh", "-tt", *ssh_opts, "-p", "9922", "-i", dec_key, f"prisoner@{tv_ip}", install_remote_cmd]
+    install_res = subprocess.run(install_args, capture_output=True, text=True)
+    install_out = install_res.stdout
+    if '"state":"installed"' not in install_out:
+        print("[!] Install did not reach the 'installed' state. Raw output:")
+        print(install_out or "(empty)")
+        if install_res.stderr:
+            print(install_res.stderr)
+        return False
 
     print("[*] Launching Free My TV...")
-    launch_cmd = f'luna-send-pub -i -u luna://com.webos.applicationManager/launch \'{{"id":"{APP_ID}"}}\''
-    subprocess.run(f'ssh {ssh_opts} -p 9922 -i "{dec_key}" prisoner@{tv_ip} "{launch_cmd}"', shell=True)
+    launch_payload = json.dumps({"id": APP_ID})
+    launch_remote_cmd = f"luna-send-pub -n 1 luna://com.webos.applicationManager/launch '{launch_payload}'"
+    launch_args = ["ssh", "-tt", *ssh_opts, "-p", "9922", "-i", dec_key, f"prisoner@{tv_ip}", launch_remote_cmd]
+    launch_res = subprocess.run(launch_args, capture_output=True, text=True)
+    if '"returnValue":true' not in launch_res.stdout:
+        print("[!] Install succeeded but launch failed. Raw output:")
+        print(launch_res.stdout or "(empty)")
+        return False
 
     print("\n[+] SUCCESS! Free My TV is installed and running on your LG TV! Enjoy! 🎉")
     return True
