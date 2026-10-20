@@ -61,9 +61,13 @@
             height: 50%;
             border-radius: 50%;
             background: radial-gradient(circle, rgba(10, 132, 255, 0.18) 0%, rgba(0, 0, 0, 0) 70%);
-            filter: blur(90px);
+            filter: blur(60px);
             pointer-events: none;
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            /* Only opacity/transform animate (compositor-only). The gradient color itself
+               snaps instantly on focus change so the GPU never re-blurs mid-transition
+               while rapidly navigating with the remote's D-Pad. */
+            transition: opacity 0.35s ease;
+            will-change: opacity;
             z-index: 1;
         }
 
@@ -139,13 +143,14 @@
             font-weight: 600;
             color: var(--text-primary);
             background: rgba(255, 255, 255, 0.07);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(14px);
             padding: 8px 16px;
             border-radius: 16px;
             border: 1.5px solid var(--glass-border);
             cursor: pointer;
             outline: none;
-            transition: all 0.2s ease;
+            will-change: transform;
+            transition: transform 0.22s cubic-bezier(0.3, 1.4, 0.5, 1), background 0.2s ease, border-color 0.2s ease;
         }
 
         .header-btn:hover,
@@ -164,12 +169,13 @@
             font-size: 15px;
             color: var(--text-primary);
             background: rgba(255, 255, 255, 0.07);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(14px);
             padding: 7px 16px;
             border-radius: 16px;
             border: 1.5px solid var(--glass-border);
             cursor: pointer;
-            transition: all 0.2s ease;
+            will-change: transform;
+            transition: transform 0.22s cubic-bezier(0.3, 1.4, 0.5, 1), background 0.2s ease, border-color 0.2s ease;
         }
 
         .weather-widget:hover,
@@ -244,8 +250,8 @@
         /* Glass App Shelf */
         .shelf-wrapper {
             background: var(--glass-shelf);
-            backdrop-filter: blur(35px);
-            -webkit-backdrop-filter: blur(35px);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             border: 1px solid var(--glass-border);
             border-radius: 28px;
             padding: 20px 26px;
@@ -291,15 +297,16 @@
             cursor: pointer;
             outline: none;
             position: relative;
-            transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-            transform: scale(1);
+            will-change: transform;
+            transition: transform 0.28s cubic-bezier(0.3, 1.4, 0.5, 1), border-color 0.2s ease, background 0.2s ease;
+            transform: scale(1) translateZ(0);
             padding: 8px;
         }
 
         .app-tile:hover,
         .app-tile:focus,
         .app-tile.focused {
-            transform: scale(1.1) translateY(-6px);
+            transform: scale(1.1) translateY(-6px) translateZ(0);
             border-color: var(--glass-focus-border);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), 0 0 25px rgba(255, 255, 255, 0.25);
             z-index: 20;
@@ -383,14 +390,16 @@
             overflow: hidden;
             cursor: pointer;
             outline: none;
-            transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            will-change: transform;
+            transition: transform 0.26s cubic-bezier(0.3, 1.4, 0.5, 1), border-color 0.2s ease, background 0.2s ease;
+            transform: translateZ(0);
             position: relative;
         }
 
         .pick-card:hover,
         .pick-card:focus,
         .pick-card.focused {
-            transform: scale(1.04) translateY(-4px);
+            transform: scale(1.04) translateY(-4px) translateZ(0);
             border-color: var(--glass-focus-border);
             box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 20px rgba(255,255,255,0.2);
             background: rgba(255, 255, 255, 0.14);
@@ -444,8 +453,8 @@
             width: 100vw;
             height: 100vh;
             background: rgba(4, 6, 12, 0.82);
-            backdrop-filter: blur(28px);
-            -webkit-backdrop-filter: blur(28px);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
             z-index: 500;
             display: none;
             align-items: center;
@@ -514,7 +523,7 @@
             color: var(--text-primary);
             font-size: 14px;
             font-weight: 500;
-            transition: all 0.15s ease;
+            transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
         }
 
         .app-toggle-item.selected {
@@ -736,12 +745,15 @@
             { id: 'spotify-beehive', title: 'Spotify', tag: 'Music', desc: 'Listen to millions of songs, albums, and podcasts on your TV.', color: '#1db954', badge: 'SP', bg: 'linear-gradient(135deg, #1db954, #0f7833)' }
         ];
 
+        // Defaults favor the streaming apps with the broadest global install base
+        // (YouTube/Netflix/Prime/Disney+) over niche regional or personal-media apps
+        // like Plex or Globoplay, which stay one tap away in Customize for anyone who uses them.
         const DEFAULT_FAVORITES = [
             'youtube.leanback.v4',
             'netflix',
-            'cdp-30',
+            'amazon',
+            'com.disney.disneyplus-prod',
             'com.crunchyroll.webapp',
-            'globoplaywebos',
             'com.webos.app.hdmi1',
             'com.webos.app.browser',
             'org.webosbrew.hbchannel'
