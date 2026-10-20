@@ -43,7 +43,9 @@ Modern LG webOS (especially webOS 6, 22, 23, and 24) replaced the classic, snapp
 - **🧊 Frosted Glass App Shelf.** Your favorite streaming apps and HDMI inputs front-and-center, launching natively in ~100ms via the webOS Luna bus.
 - **⚙️ On-Screen Shelf Customizer.** Automatically detects installed apps on your LG TV so you can toggle which ones appear on your shelf using your remote.
 - **🌅 Dynamic Sunset & OLED Themes.** Connects to Open-Meteo to show live local weather and automatically shifts your background from *Daylight Blue* to *Sunset Amber* to *Deep Midnight* (plus a *Pure OLED Black* mode).
-- **🎬 Live Trending Picks.** Fresh movie, series, and anime picks with dynamic Top Shelf descriptions—powered by your optional TMDB key or our built-in zero-key live feed.
+- **🎬 Movies & Shows Trending Tabs.** Separate tabs for trending movies and TV shows—TMDB-ranked with your optional key, or our built-in zero-key live feed (TVMaze for Shows, curated picks for Movies).
+- **🌤️ Weather & Sun Drawer.** Click the weather widget for an hourly forecast and exact sunrise/sunset times, powered by Open-Meteo.
+- **🌑 OLED-Safe Idle Screensaver.** A pure-black floating clock kicks in after a few minutes idle and gently shifts position to avoid burn-in—dismissed by any key or remote movement.
 - **🎮 Full Magic Remote & D-Pad Support.** Point and click with the LG Magic Remote cursor, or fly across tiles with the directional arrow keys and scroll wheel.
 - **💻 100% Onboard & Independent.** Installed as a native `.ipk` package on your TV. Your computer does **not** need to stay on.
 - **🛡️ Safe & Reversible.** Works on stock unrooted TVs via official LG Developer Mode (or Homebrew Channel). Your factory home screen is untouched.
@@ -84,7 +86,7 @@ python scripts/install.py
 ### Step 2B: GUI Install via webOS Dev Manager
 1. Install [webOS Dev Manager](https://github.com/webosbrew/dev-manager-desktop/releases) (`winget install webosbrew.webOSDevManager` on Windows).
 2. Connect your TV using the IP and Passphrase.
-3. Download [`dist/org.webos.freemytv_1.1.0_all.ipk`](dist/org.webos.freemytv_1.1.0_all.ipk) and click **Install .ipk**.
+3. Download [`dist/org.webos.freemytv_1.2.0_all.ipk`](dist/org.webos.freemytv_1.2.0_all.ipk) and click **Install .ipk**.
 
 > [!TIP]
 > **Make It Your 1-Second Home Key (Quick Access):**
@@ -128,7 +130,7 @@ free-my-webos/
 │   ├── webOSTV.js         # Official LG webOS JavaScript service library
 │   └── assets/            # App icons & splash screens
 ├── dist/
-│   └── org.webos.freemytv_1.1.0_all.ipk
+│   └── org.webos.freemytv_1.2.0_all.ipk
 ├── docs/                  # Live preview & visual assets
 └── scripts/
     ├── build.py           # Cross-platform .ipk compiler (ares-package + pure Python fallback)
@@ -196,7 +198,9 @@ O webOS moderno da LG (especialmente webOS 6, 22, 23 e 24) substituiu a clássic
 - **🧊 Prateleira de Apps em Vidro Fosco.** Seus apps de streaming e entradas HDMI favoritos em destaque, abrindo nativamente em ~100ms via o barramento Luna do webOS.
 - **⚙️ Personalizador de Prateleira na Tela.** Detecta automaticamente os apps instalados na sua TV LG para você escolher quais aparecem na prateleira usando o controle remoto.
 - **🌅 Temas Dinâmicos de Pôr do Sol e OLED.** Conecta ao Open-Meteo para mostrar o clima local ao vivo e muda automaticamente o fundo de *Azul Diurno* para *Âmbar do Pôr do Sol* até *Meia-Noite Profunda* (além de um modo *Preto OLED Puro*).
-- **🎬 Sugestões em Alta ao Vivo.** Sugestões atualizadas de filmes, séries e animes com descrições dinâmicas — usando sua chave TMDB opcional ou nosso feed ao vivo sem necessidade de chave.
+- **🎬 Abas de Filmes e Séries em Alta.** Abas separadas para filmes e séries em alta — ranqueadas pelo TMDB com sua chave opcional, ou nosso feed ao vivo sem chave (TVMaze para séries, curadoria para filmes).
+- **🌤️ Gaveta de Clima e Sol.** Clique no widget de clima para ver a previsão hora a hora e os horários exatos de nascer/pôr do sol, via Open-Meteo.
+- **🌑 Screensaver Seguro para OLED.** Um relógio flutuante em tela totalmente preta aparece após alguns minutos parado e muda de posição aos poucos para evitar marcação de imagem — some com qualquer tecla ou movimento do controle.
 - **🎮 Suporte Completo ao Magic Remote e D-Pad.** Aponte e clique com o cursor do Magic Remote da LG, ou navegue pelos cards com as setas direcionais e a roda de rolagem.
 - **💻 100% Independente na TV.** Instalado como um pacote `.ipk` nativo na sua TV. Seu computador **não** precisa ficar ligado.
 - **🛡️ Seguro e Reversível.** Funciona em TVs de fábrica sem root via o Developer Mode oficial da LG (ou Homebrew Channel). Sua home screen de fábrica fica intocada.
@@ -237,7 +241,7 @@ python scripts/install.py
 ### Passo 2B: Instalação via Interface Gráfica (webOS Dev Manager)
 1. Instale o [webOS Dev Manager](https://github.com/webosbrew/dev-manager-desktop/releases) (`winget install webosbrew.webOSDevManager` no Windows).
 2. Conecte sua TV usando o IP e a Senha.
-3. Baixe o [`dist/org.webos.freemytv_1.1.0_all.ipk`](dist/org.webos.freemytv_1.1.0_all.ipk) e clique em **Install .ipk**.
+3. Baixe o [`dist/org.webos.freemytv_1.2.0_all.ipk`](dist/org.webos.freemytv_1.2.0_all.ipk) e clique em **Install .ipk**.
 
 > [!TIP]
 > **Transforme em Sua Tecla de Acesso Rápido (1 Segundo):**
@@ -281,7 +285,7 @@ free-my-webos/
 │   ├── webOSTV.js         # Biblioteca oficial de serviços JavaScript do LG webOS
 │   └── assets/            # Ícones e telas de splash do app
 ├── dist/
-│   └── org.webos.freemytv_1.1.0_all.ipk
+│   └── org.webos.freemytv_1.2.0_all.ipk
 ├── docs/                  # Preview ao vivo e recursos visuais
 └── scripts/
     ├── build.py           # Compilador .ipk multiplataforma (ares-package + fallback em Python puro)

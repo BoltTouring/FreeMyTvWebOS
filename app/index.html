@@ -375,6 +375,40 @@
             color: var(--text-secondary);
         }
 
+        .picks-tabs {
+            display: flex;
+            gap: 8px;
+        }
+
+        .picks-tab {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1.5px solid var(--glass-border);
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 6px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            outline: none;
+            will-change: transform;
+            transition: transform 0.2s cubic-bezier(0.3, 1.4, 0.5, 1), border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+        }
+
+        .picks-tab.active {
+            color: var(--text-primary);
+            background: rgba(10, 132, 255, 0.22);
+            border-color: #0a84ff;
+        }
+
+        .picks-tab:hover,
+        .picks-tab:focus,
+        .picks-tab.focused {
+            border-color: var(--glass-focus-border);
+            transform: scale(1.06);
+        }
+
         .picks-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -623,6 +657,156 @@
             display: none;
             z-index: 1000;
         }
+
+        /* Weather & Sun Drawer */
+        .drawer-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(4, 6, 12, 0.55);
+            z-index: 500;
+            display: none;
+            justify-content: flex-end;
+        }
+
+        .drawer-backdrop.active {
+            display: flex;
+        }
+
+        .drawer-panel {
+            width: 460px;
+            max-width: 90vw;
+            height: 100%;
+            background: rgba(18, 22, 34, 0.96);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-left: 1px solid rgba(255, 255, 255, 0.14);
+            padding: 32px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            box-shadow: -20px 0 60px rgba(0, 0, 0, 0.6);
+            transform: translateX(100%);
+            transition: transform 0.32s cubic-bezier(0.3, 1.1, 0.4, 1);
+            overflow-y: auto;
+        }
+
+        .drawer-backdrop.active .drawer-panel {
+            transform: translateX(0);
+        }
+
+        .drawer-current {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .drawer-current-icon {
+            font-size: 48px;
+        }
+
+        .drawer-current-temp {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .drawer-current-sub {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .drawer-hourly {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 4px 2px;
+        }
+
+        .drawer-hour-chip {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1.5px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 10px 8px;
+            text-align: center;
+            min-width: 58px;
+            flex-shrink: 0;
+        }
+
+        .drawer-hour-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .drawer-hour-icon {
+            font-size: 20px;
+            margin: 4px 0;
+        }
+
+        .drawer-hour-temp {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .drawer-sun-row {
+            display: flex;
+            gap: 24px;
+        }
+
+        .drawer-sun-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+        }
+
+        .drawer-sun-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .drawer-sun-value {
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        /* OLED-Safe Idle Screensaver */
+        .screensaver {
+            position: fixed;
+            inset: 0;
+            background: #000000;
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: none;
+        }
+
+        .screensaver.active {
+            display: flex;
+        }
+
+        .screensaver-clock-wrap {
+            text-align: center;
+            transition: transform 1.4s ease-in-out;
+        }
+
+        .screensaver-clock {
+            font-size: 132px;
+            font-weight: 200;
+            letter-spacing: -2px;
+            color: rgba(255, 255, 255, 0.82);
+        }
+
+        .screensaver-date {
+            font-size: 22px;
+            font-weight: 400;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 6px;
+        }
     </style>
 </head>
 <body>
@@ -677,6 +861,10 @@
         <div class="picks-section">
             <div class="picks-top-bar">
                 <div class="picks-header">Trending This Week</div>
+                <div class="picks-tabs">
+                    <button class="picks-tab nav-item active" id="tabMovies" data-tag="Trending" data-title="Movies" data-desc="Switch the row below to this week's trending movies.">Movies</button>
+                    <button class="picks-tab nav-item" id="tabShows" data-tag="Trending" data-title="Shows" data-desc="Switch the row below to this week's trending TV shows.">Shows</button>
+                </div>
                 <div class="picks-source-badge" id="picksSourceBadge">Live Feed</div>
             </div>
             <div class="picks-grid" id="picksGrid"></div>
@@ -727,6 +915,58 @@
         </div>
     </div>
 
+    <!-- Weather & Sun Drawer -->
+    <div class="drawer-backdrop" id="weatherDrawer">
+        <div class="drawer-panel">
+            <div class="modal-header">
+                <div class="modal-title">Weather & Sun</div>
+                <div style="font-size: 13px; color: var(--text-secondary);">Press BACK or ESC to close</div>
+            </div>
+
+            <div class="drawer-current">
+                <span class="drawer-current-icon" id="drawerIcon">☀️</span>
+                <div>
+                    <div class="drawer-current-temp" id="drawerTemp">--°C</div>
+                    <div class="drawer-current-sub" id="drawerCityLabel">Loading...</div>
+                </div>
+            </div>
+
+            <div>
+                <div class="modal-section-title">Next Hours</div>
+                <div class="drawer-hourly" id="drawerHourly"></div>
+            </div>
+
+            <div class="drawer-sun-row">
+                <div class="drawer-sun-item">
+                    <span>🌅</span>
+                    <div>
+                        <div class="drawer-sun-label">Sunrise</div>
+                        <div class="drawer-sun-value" id="drawerSunrise">--:--</div>
+                    </div>
+                </div>
+                <div class="drawer-sun-item">
+                    <span>🌇</span>
+                    <div>
+                        <div class="drawer-sun-label">Sunset</div>
+                        <div class="drawer-sun-value" id="drawerSunset">--:--</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-secondary" id="closeDrawerBtn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- OLED-Safe Idle Screensaver -->
+    <div class="screensaver" id="screensaverOverlay">
+        <div class="screensaver-clock-wrap" id="screensaverClockWrap">
+            <div class="screensaver-clock" id="screensaverClock">20:30</div>
+            <div class="screensaver-date" id="screensaverDate">Mon, Oct 19</div>
+        </div>
+    </div>
+
     <script>
         // --- Default Catalog of Apps ---
         const DEFAULT_CATALOG = [
@@ -759,11 +999,18 @@
             'org.webosbrew.hbchannel'
         ];
 
-        const FALLBACK_PICKS = [
+        const FALLBACK_MOVIES = [
             { title: 'Dune: Part Two', badge: 'Sci-Fi • 8.8★', service: 'Watch on Max / Netflix', app: 'netflix', desc: 'Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators.', poster: 'https://image.tmdb.org/t/p/w300/8b8R8l88Qje9dn9OE8PY05Nxl1X.jpg', color: '#e5a00d' },
-            { title: 'Severance', badge: 'Thriller • 8.7★', service: 'Trending Series', app: 'cdp-30', desc: 'Mark leads a team of office workers whose memories have been surgically divided between work and personal lives.', poster: 'https://image.tmdb.org/t/p/w300/e9Lra4Wv77L84a0d8lEwB47zYqS.jpg', color: '#0a84ff' },
-            { title: 'Lofi Girl 24/7 Radio', badge: 'Live Music • 4K', service: 'Watch on YouTube', app: 'youtube.leanback.v4', desc: 'Relaxing beats to code, relax, and study to. Always live in high definition.', poster: 'https://i.ytimg.com/vi/jfKfPfyJRdk/hqdefault.jpg', color: '#ff375f' },
-            { title: 'Demon Slayer: Infinity', badge: 'Anime • 8.9★', service: 'Watch on Crunchyroll', app: 'com.crunchyroll.webapp', desc: 'Tanjiro and the Hashira face the Upper Rank demons in the final stronghold.', poster: 'https://image.tmdb.org/t/p/w300/xUfRZu2mi8jH6SzQEJGP6tjBuYj.jpg', color: '#f47521' }
+            { title: 'Oppenheimer', badge: 'Drama • 8.3★', service: 'Watch on Prime Video', app: 'amazon', desc: 'The story of American scientist J. Robert Oppenheimer and his role in developing the atomic bomb.', poster: '', color: '#00a8e1' },
+            { title: 'Spider-Man: Across the Spider-Verse', badge: 'Animation • 8.6★', service: 'Watch on Netflix', app: 'netflix', desc: 'Miles Morales catapults across the Multiverse to team up with Gwen Stacy and a new crew of Spider-People.', poster: '', color: '#5856d6' },
+            { title: 'Barbie', badge: 'Comedy • 7.0★', service: 'Watch on Max', app: 'netflix', desc: 'Barbie and Ken venture from Barbie Land to the real world in search of true happiness.', poster: '', color: '#ff375f' }
+        ];
+
+        const FALLBACK_SHOWS = [
+            { title: 'Severance', badge: 'Thriller • 8.7★', service: 'Trending Series', app: 'netflix', desc: 'Mark leads a team of office workers whose memories have been surgically divided between work and personal lives.', poster: 'https://image.tmdb.org/t/p/w300/e9Lra4Wv77L84a0d8lEwB47zYqS.jpg', color: '#0a84ff' },
+            { title: 'Demon Slayer: Infinity', badge: 'Anime • 8.9★', service: 'Watch on Crunchyroll', app: 'com.crunchyroll.webapp', desc: 'Tanjiro and the Hashira face the Upper Rank demons in the final stronghold.', poster: 'https://image.tmdb.org/t/p/w300/xUfRZu2mi8jH6SzQEJGP6tjBuYj.jpg', color: '#f47521' },
+            { title: 'The Last of Us', badge: 'Drama • 8.8★', service: 'Watch on Max', app: 'netflix', desc: 'Joel and Ellie navigate a brutal, infected America in search of a cure.', poster: '', color: '#e5a00d' },
+            { title: 'Stranger Things', badge: 'Sci-Fi • 8.6★', service: 'Watch on Netflix', app: 'netflix', desc: 'A group of kids uncover supernatural mysteries in the small town of Hawkins, Indiana.', poster: '', color: '#ff0000' }
         ];
 
         // --- Persistent State ---
@@ -775,6 +1022,10 @@
             theme: localStorage.getItem('fmtv_theme') || 'auto',
             tmdbKey: localStorage.getItem('fmtv_tmdb_key') || '',
             catalog: DEFAULT_CATALOG.slice(),
+            picksTab: 'movies',
+            hourlyForecast: [],
+            sunrise: '',
+            sunset: '',
             isSunset: false,
             isNight: true
         };
@@ -784,10 +1035,15 @@
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
-            document.getElementById('clockText').textContent = hours + ':' + minutes;
+            const timeStr = hours + ':' + minutes;
+            document.getElementById('clockText').textContent = timeStr;
 
             const opts = { weekday: 'short', month: 'short', day: 'numeric' };
-            document.getElementById('dateText').textContent = now.toLocaleDateString('en-US', opts);
+            const dateStr = now.toLocaleDateString('en-US', opts);
+            document.getElementById('dateText').textContent = dateStr;
+
+            document.getElementById('screensaverClock').textContent = timeStr;
+            document.getElementById('screensaverDate').textContent = dateStr;
         }
         setInterval(updateClock, 1000);
         updateClock();
@@ -871,9 +1127,20 @@
                     cityLabel = cityLabel || 'São Paulo';
                 }
 
-                const url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon + '&current=temperature_2m,weather_code,is_day&daily=sunrise,sunset&timezone=auto';
+                const url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon +
+                    '&current=temperature_2m,weather_code,is_day' +
+                    '&hourly=temperature_2m,weather_code' +
+                    '&daily=sunrise,sunset&timezone=auto&forecast_days=2';
                 const res = await fetch(url);
                 const data = await res.json();
+
+                // Open-Meteo returns naive local wall-clock strings for the target city,
+                // so "now" must be shifted by the same UTC offset to compare correctly -
+                // comparing against the device's own local time would be wrong whenever
+                // the device and the configured city are in different timezones.
+                const localNow = typeof data.utc_offset_seconds === 'number'
+                    ? new Date(Date.now() + data.utc_offset_seconds * 1000)
+                    : new Date();
 
                 if (data.current) {
                     const temp = Math.round(data.current.temperature_2m);
@@ -885,47 +1152,69 @@
                     document.getElementById('weatherText').textContent = temp + '°C • ' + wmo[1];
 
                     let sunsetStr = '';
-                    if (data.daily && data.daily.sunset && data.daily.sunset[0]) {
-                        const sunsetTime = data.daily.sunset[0].split('T')[1];
-                        sunsetStr = ' • Sunset ' + sunsetTime;
-                        const nowHour = new Date().getHours();
-                        const sunsetHour = parseInt(sunsetTime.split(':')[0], 10);
-                        state.isSunset = Math.abs(nowHour - sunsetHour) <= 1;
+                    if (data.daily) {
+                        if (data.daily.sunrise && data.daily.sunrise[0]) {
+                            state.sunrise = data.daily.sunrise[0].split('T')[1];
+                        }
+                        if (data.daily.sunset && data.daily.sunset[0]) {
+                            state.sunset = data.daily.sunset[0].split('T')[1];
+                            sunsetStr = ' • Sunset ' + state.sunset;
+                            const sunsetHour = parseInt(state.sunset.split(':')[0], 10);
+                            state.isSunset = Math.abs(localNow.getUTCHours() - sunsetHour) <= 1;
+                        }
                     }
                     state.isNight = !isDay;
                     document.getElementById('weatherSub').textContent = cityLabel + sunsetStr;
                     applyTheme();
                 }
+
+                if (data.hourly && Array.isArray(data.hourly.time)) {
+                    const nowKey = localNow.toISOString().slice(0, 13);
+                    let startIdx = data.hourly.time.findIndex(function(t) { return t.slice(0, 13) >= nowKey; });
+                    if (startIdx === -1) startIdx = 0;
+                    // 6 chips so the D-Pad-only drawer never needs scrolling to see them all
+                    state.hourlyForecast = data.hourly.time.slice(startIdx, startIdx + 6).map(function(t, i) {
+                        const idx = startIdx + i;
+                        return {
+                            hour: t.split('T')[1].slice(0, 5),
+                            temp: Math.round(data.hourly.temperature_2m[idx]),
+                            code: data.hourly.weather_code[idx]
+                        };
+                    });
+                }
+
+                renderDrawerForecast();
             } catch (err) {
                 document.getElementById('weatherText').textContent = '22°C • Clear';
                 document.getElementById('weatherSub').textContent = state.city || 'Offline Mode';
             }
         }
 
-        // --- Live Trending Picks (TMDB + Live TVMaze Zero-Key Feed) ---
+        // --- Live Trending Picks (TMDB + Live TVMaze Zero-Key Feed), split by Movies/Shows tab ---
         async function fetchTrendingPicks() {
             const badge = document.getElementById('picksSourceBadge');
+            const tab = state.picksTab;
+            const tmdbMediaPath = tab === 'shows' ? 'tv' : 'movie';
             try {
-                // 1. If user provided a TMDB API Key, fetch live from TMDB
+                // 1. If user provided a TMDB API Key, fetch live from TMDB for the active tab
                 if (state.tmdbKey && state.tmdbKey.trim().length > 8) {
                     const key = state.tmdbKey.trim();
                     const headers = key.length > 40 ? { 'Authorization': 'Bearer ' + key } : {};
                     const url = key.length > 40
-                        ? 'https://api.themoviedb.org/3/trending/all/week?language=en-US'
-                        : 'https://api.themoviedb.org/3/trending/all/week?api_key=' + encodeURIComponent(key);
+                        ? 'https://api.themoviedb.org/3/trending/' + tmdbMediaPath + '/week?language=en-US'
+                        : 'https://api.themoviedb.org/3/trending/' + tmdbMediaPath + '/week?api_key=' + encodeURIComponent(key);
 
                     const res = await fetch(url, { headers: headers });
                     const data = await res.json();
-                    if (data.results && data.results.length >= 4) {
+                    if (data.results && data.results.length >= 4 && tab === state.picksTab) {
                         const items = data.results.slice(0, 4).map(function(item) {
                             const title = item.title || item.name || 'Trending';
                             const score = item.vote_average ? item.vote_average.toFixed(1) + '★' : 'Hot';
-                            const mediaType = item.media_type === 'tv' ? 'Series' : 'Movie';
                             return {
                                 title: title,
-                                badge: mediaType + ' • ' + score,
+                                badge: (tab === 'shows' ? 'Series' : 'Movie') + ' • ' + score,
                                 service: 'TMDB Trending',
-                                app: item.media_type === 'tv' ? 'netflix' : 'cdp-30',
+                                app: 'netflix',
                                 desc: item.overview || 'Trending worldwide this week.',
                                 poster: item.poster_path ? 'https://image.tmdb.org/t/p/w300' + item.poster_path : '',
                                 color: '#0a84ff'
@@ -937,38 +1226,42 @@
                     }
                 }
 
-                // 2. Zero-Key Live Fallback: Fetch top popular shows from TVMaze Public API
-                const res = await fetch('https://api.tvmaze.com/shows?page=0');
-                const shows = await res.json();
-                if (Array.isArray(shows) && shows.length > 0) {
-                    const topShows = shows
-                        .filter(function(s) { return s.rating && s.rating.average >= 8.4 && s.image && s.image.medium; })
-                        .sort(function() { return 0.5 - Math.random(); })
-                        .slice(0, 4)
-                        .map(function(s) {
-                            const cleanSummary = (s.summary || '').replace(/<[^>]*>/g, '');
-                            const genre = (s.genres && s.genres[0]) || 'Series';
-                            const network = (s.network && s.network.name) || (s.webChannel && s.webChannel.name) || 'Streaming';
-                            return {
-                                title: s.name,
-                                badge: genre + ' • ' + s.rating.average + '★',
-                                service: 'Watch on ' + network,
-                                app: 'netflix',
-                                desc: cleanSummary || 'Critically acclaimed trending series.',
-                                poster: s.image.medium,
-                                color: '#0a84ff'
-                            };
-                        });
-                    if (topShows.length === 4) {
-                        badge.textContent = 'Live Popular Feed';
-                        renderPicks(topShows);
-                        return;
+                // 2. Zero-Key Live Fallback: TVMaze only has TV data, so it covers the Shows tab;
+                //    the Movies tab falls through to the curated list below without a TMDB key.
+                if (tab === 'shows') {
+                    const res = await fetch('https://api.tvmaze.com/shows?page=0');
+                    const shows = await res.json();
+                    if (Array.isArray(shows) && shows.length > 0 && tab === state.picksTab) {
+                        const topShows = shows
+                            .filter(function(s) { return s.rating && s.rating.average >= 8.4 && s.image && s.image.medium; })
+                            .sort(function() { return 0.5 - Math.random(); })
+                            .slice(0, 4)
+                            .map(function(s) {
+                                const cleanSummary = (s.summary || '').replace(/<[^>]*>/g, '');
+                                const genre = (s.genres && s.genres[0]) || 'Series';
+                                const network = (s.network && s.network.name) || (s.webChannel && s.webChannel.name) || 'Streaming';
+                                return {
+                                    title: s.name,
+                                    badge: genre + ' • ' + s.rating.average + '★',
+                                    service: 'Watch on ' + network,
+                                    app: 'netflix',
+                                    desc: cleanSummary || 'Critically acclaimed trending series.',
+                                    poster: s.image.medium,
+                                    color: '#0a84ff'
+                                };
+                            });
+                        if (topShows.length === 4) {
+                            badge.textContent = 'Live Popular Feed';
+                            renderPicks(topShows);
+                            return;
+                        }
                     }
                 }
             } catch (e) {}
 
+            if (tab !== state.picksTab) return;
             badge.textContent = 'Curated Picks';
-            renderPicks(FALLBACK_PICKS);
+            renderPicks(tab === 'shows' ? FALLBACK_SHOWS : FALLBACK_MOVIES);
         }
 
         // --- Discover Installed Apps from LG webOS ---
@@ -1141,6 +1434,45 @@
             ambientGlow.style.background = 'radial-gradient(circle, ' + color + '35 0%, rgba(0,0,0,0) 70%)';
         }
 
+        // Geometric (position-based) focus movement for Up/Down: finds the nearest
+        // nav-item strictly above/below the current one, weighted toward the same
+        // horizontal column. This replaces hand-tuned index arithmetic that broke
+        // every time a row was added/removed (header -> apps -> tabs -> picks).
+        function moveFocusVertical(dir) {
+            const current = mainNavItems[curIndex];
+            if (!current) return;
+            const cur = current.getBoundingClientRect();
+            const curX = cur.left + cur.width / 2;
+            const curY = cur.top + cur.height / 2;
+
+            const candidates = [];
+            mainNavItems.forEach(function(el, idx) {
+                if (idx === curIndex) return;
+                const r = el.getBoundingClientRect();
+                const x = r.left + r.width / 2;
+                const y = r.top + r.height / 2;
+                const dy = (y - curY) * dir;
+                // Threshold well above the focus hover-lift (tiles/cards shift up to ~6px on
+                // focus via translateY), otherwise that lift alone makes a same-row neighbor
+                // look like it's "below" and Down/Up never leaves the row.
+                if (dy <= 24) return; // must actually be in the requested direction, a full row away
+                candidates.push({ idx: idx, dy: dy, dx: Math.abs(x - curX) });
+            });
+            if (!candidates.length) return;
+
+            // Snap to the nearest row first (smallest dy), then pick whichever item in
+            // that row is best horizontally aligned. Scoring dy+dx together let a
+            // far-but-aligned row (e.g. a full-width picks grid) outscore a narrow row
+            // sitting right in between (e.g. the Movies/Shows tabs), which skipped it
+            // entirely - rows must win on distance first, alignment only breaks ties.
+            const minDy = Math.min.apply(null, candidates.map(function(c) { return c.dy; }));
+            const nearestRow = candidates.filter(function(c) { return c.dy <= minDy + 40; });
+            nearestRow.sort(function(a, b) { return a.dx - b.dx; });
+
+            curIndex = nearestRow[0].idx;
+            setMainFocus(mainNavItems[curIndex]);
+        }
+
         // --- Customize Shelf & Settings Modal ---
         const settingsModal = document.getElementById('settingsModal');
         let tempFavorites = [];
@@ -1208,12 +1540,114 @@
             setMainFocus(document.getElementById('customizeBtn'));
         });
         document.getElementById('weatherWidget').addEventListener('click', function() {
-            showToast('Refreshing Weather...');
+            openDrawer();
             fetchWeather();
         });
         document.getElementById('weatherWidget').addEventListener('mouseenter', function() {
             setMainFocus(document.getElementById('weatherWidget'));
         });
+
+        // --- Trending Tabs: Movies / Shows ---
+        function switchPicksTab(tab) {
+            if (state.picksTab === tab) return;
+            state.picksTab = tab;
+            document.getElementById('tabMovies').classList.toggle('active', tab === 'movies');
+            document.getElementById('tabShows').classList.toggle('active', tab === 'shows');
+            fetchTrendingPicks();
+        }
+        document.getElementById('tabMovies').addEventListener('click', function() { switchPicksTab('movies'); });
+        document.getElementById('tabShows').addEventListener('click', function() { switchPicksTab('shows'); });
+        document.getElementById('tabMovies').addEventListener('mouseenter', function() {
+            setMainFocus(document.getElementById('tabMovies'));
+        });
+        document.getElementById('tabShows').addEventListener('mouseenter', function() {
+            setMainFocus(document.getElementById('tabShows'));
+        });
+
+        // --- Weather & Sun Drawer ---
+        const weatherDrawer = document.getElementById('weatherDrawer');
+        const closeDrawerBtn = document.getElementById('closeDrawerBtn');
+        let drawerOpen = false;
+
+        function renderDrawerForecast() {
+            document.getElementById('drawerIcon').textContent = document.getElementById('weatherIcon').textContent;
+            document.getElementById('drawerTemp').textContent = document.getElementById('weatherText').textContent;
+            document.getElementById('drawerCityLabel').textContent = document.getElementById('weatherSub').textContent;
+            document.getElementById('drawerSunrise').textContent = state.sunrise || '--:--';
+            document.getElementById('drawerSunset').textContent = state.sunset || '--:--';
+
+            const hourlyEl = document.getElementById('drawerHourly');
+            hourlyEl.innerHTML = '';
+            state.hourlyForecast.forEach(function(h) {
+                const wmo = WMO_CODES[h.code] || ['⛅', 'Fair'];
+                const chip = document.createElement('div');
+                chip.className = 'drawer-hour-chip';
+                chip.innerHTML =
+                    '<div class="drawer-hour-time">' + h.hour + '</div>' +
+                    '<div class="drawer-hour-icon">' + wmo[0] + '</div>' +
+                    '<div class="drawer-hour-temp">' + h.temp + '°</div>';
+                hourlyEl.appendChild(chip);
+            });
+        }
+
+        function openDrawer() {
+            drawerOpen = true;
+            weatherDrawer.classList.add('active');
+            closeDrawerBtn.classList.add('focused');
+            closeDrawerBtn.focus();
+        }
+
+        function closeDrawer() {
+            drawerOpen = false;
+            weatherDrawer.classList.remove('active');
+            closeDrawerBtn.classList.remove('focused');
+            setMainFocus(mainNavItems[curIndex]);
+        }
+
+        closeDrawerBtn.addEventListener('click', closeDrawer);
+
+        // --- OLED-Safe Idle Screensaver ---
+        const IDLE_TIMEOUT_MS = 3 * 60 * 1000;
+        const PIXEL_SHIFT_MS = 25 * 1000;
+        const screensaverOverlay = document.getElementById('screensaverOverlay');
+        const screensaverClockWrap = document.getElementById('screensaverClockWrap');
+        let screensaverOn = false;
+        let lastActivity = Date.now();
+        let pixelShiftTimer = null;
+
+        function shiftScreensaverClock() {
+            const maxX = Math.min(window.innerWidth * 0.28, 260);
+            const maxY = Math.min(window.innerHeight * 0.28, 160);
+            const x = Math.round((Math.random() - 0.5) * 2 * maxX);
+            const y = Math.round((Math.random() - 0.5) * 2 * maxY);
+            screensaverClockWrap.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+        }
+
+        function enterScreensaver() {
+            screensaverOn = true;
+            screensaverOverlay.classList.add('active');
+            shiftScreensaverClock();
+            pixelShiftTimer = setInterval(shiftScreensaverClock, PIXEL_SHIFT_MS);
+        }
+
+        function exitScreensaver() {
+            screensaverOn = false;
+            screensaverOverlay.classList.remove('active');
+            clearInterval(pixelShiftTimer);
+        }
+
+        function markActivity() {
+            lastActivity = Date.now();
+            if (screensaverOn) exitScreensaver();
+        }
+        document.addEventListener('mousemove', markActivity);
+        document.addEventListener('mousedown', markActivity);
+
+        setInterval(function() {
+            if (!screensaverOn && !modalOpen && !drawerOpen && Date.now() - lastActivity > IDLE_TIMEOUT_MS) {
+                enterScreensaver();
+            }
+        }, 10000);
 
         document.getElementById('closeModalBtn').addEventListener('click', closeSettingsModal);
         document.getElementById('resetDefaultBtn').addEventListener('click', function() {
@@ -1247,10 +1681,28 @@
 
         // --- Remote Control Key Handler ---
         document.addEventListener('keydown', function(e) {
+            lastActivity = Date.now();
+            if (screensaverOn) {
+                exitScreensaver();
+                e.preventDefault();
+                return;
+            }
+
             // Back button on LG Magic Remote (461) or Escape
             if (e.keyCode === 461 || e.key === 'Escape' || e.key === 'GoBack') {
                 if (modalOpen) {
                     closeSettingsModal();
+                    e.preventDefault();
+                } else if (drawerOpen) {
+                    closeDrawer();
+                    e.preventDefault();
+                }
+                return;
+            }
+
+            if (drawerOpen) {
+                if (e.key === 'Enter') {
+                    closeDrawer();
                     e.preventDefault();
                 }
                 return;
@@ -1285,22 +1737,10 @@
                 setMainFocus(mainNavItems[curIndex]);
                 e.preventDefault();
             } else if (e.key === 'ArrowDown') {
-                if (curIndex <= 1) {
-                    curIndex = 2; // Move from header to first app tile
-                } else if (curIndex < 2 + state.favorites.length) {
-                    curIndex = Math.min(2 + state.favorites.length + Math.floor((curIndex - 2) / 2), mainNavItems.length - 1);
-                }
-                setMainFocus(mainNavItems[curIndex]);
+                moveFocusVertical(1);
                 e.preventDefault();
             } else if (e.key === 'ArrowUp') {
-                const appsStart = 2;
-                const picksStart = 2 + state.favorites.length;
-                if (curIndex >= picksStart) {
-                    curIndex = appsStart + Math.min((curIndex - picksStart) * 2, state.favorites.length - 1);
-                } else if (curIndex >= appsStart) {
-                    curIndex = 0; // Move to Customize button in header
-                }
-                setMainFocus(mainNavItems[curIndex]);
+                moveFocusVertical(-1);
                 e.preventDefault();
             } else if (e.key === 'Enter') {
                 if (mainNavItems[curIndex]) {
@@ -1312,7 +1752,7 @@
 
         // --- Boot Sequence ---
         renderAppsShelf();
-        renderPicks(FALLBACK_PICKS);
+        renderPicks(FALLBACK_MOVIES);
         applyTheme();
         fetchWeather();
         fetchTrendingPicks();

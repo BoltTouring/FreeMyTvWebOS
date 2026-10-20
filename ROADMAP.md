@@ -39,13 +39,14 @@ flowchart LR
 - [ ] **Direct Content Deep-Linking:** Clicking a trending movie or show opens the exact title page directly inside Netflix, YouTube, Disney+, Prime Video, or Plex (`contentTarget` payload).
 - [ ] **Drag-and-Drop / D-Pad Reordering:** Reorder app tiles directly on the shelf using long-press `Enter` + Left/Right arrows.
 - [ ] **Native App Icon Extraction:** Render local TV resource icons (`https://127.0.0.1:3001/resources/...`) alongside custom minimalist vector badges.
-- [ ] **Slide-Out Info Drawer:** Optional one-press drawer with 24-hour weather forecast, sunrise/sunset arc, and live market/sports scores.
+- [x] **Slide-Out Info Drawer *(landed early)*:** Clicking the weather widget opens a panel with an hourly forecast (6 hours) and sunrise/sunset times, powered by Open-Meteo. Live market/sports scores are not included.
+- [x] **Movies / Shows Trending Tabs *(not originally planned, added early)*:** The trending row is now two tabs instead of one mixed list — TMDB-ranked when a key is set, TVMaze's live feed for Shows with no key, curated picks for Movies with no key.
 - [ ] **Multi-Language Support:** Built-in localization for English (`en`), Portuguese (`pt-BR`), Spanish (`es`), German (`de`), and French (`fr`).
 
 ### v1.3 — OLED Care Screensaver & PC Wake-on-LAN
-- [ ] **OLED Burn-In Protection & Ambient Screensaver:** Full-screen curated 4K backdrops with floating glass clock and pixel-shifting when idle for >3 minutes.
+- [x] **Idle Screensaver & Clock Overlay *(landed early, partial)*:** A pure-black, OLED-safe screensaver with a floating clock that pixel-shifts position every ~25s kicks in after 3 minutes idle. The curated 4K photo-backdrop variant is still pending.
 - [ ] **Wake-on-LAN (WoL) PC Tile:** Turn on your gaming PC or home media server automatically when clicking the HDMI / Plex tile.
-- [ ] **System Debloat Helper:** Optional one-click toggle inside Settings to mute LG promotional notifications and clear background app memory.
+- [ ] **System Debloat Helper:** Optional one-click toggle inside Settings to mute LG promotional notifications and clear background app memory. Needs root (Homebrew Channel) — this app runs unrooted, so it cannot touch system services on its own.
 
 ### v1.4 — Official Homebrew Channel Repo & Home Button Hook
 - [ ] **Publish to `webosbrew.org` Repository:** Allow any user with the Homebrew Channel to install and update **Free My TV** in one click directly on their TV.
