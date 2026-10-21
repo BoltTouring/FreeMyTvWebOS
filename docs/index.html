@@ -585,7 +585,6 @@
         .shelf-edit-actions[hidden], #reorderShelfBtn[hidden] { display: none; }
         .shelf-edit-actions button, #reorderShelfBtn { padding: 7px 14px; font-size: 14px; }
         .app-tile.moving { outline: 3px solid #fff; transform: translateY(-8px); }
-        .app-tile.moving::after { content: '← MOVE →'; position: absolute; top: -27px; font-size: 13px; font-weight: 700; color: #fff; }
 
         .app-tile[aria-busy="true"] { border-color: var(--accent); }
 
@@ -872,8 +871,6 @@
                 <div class="shelf-hint" id="shelfCountHint" aria-live="polite">Instant Native Launch</div>
                 <button class="header-btn nav-item" id="reorderShelfBtn" data-title="Reorder tiles" data-desc="Rearrange your apps right here on the shelf.">Reorder</button>
                 <div class="shelf-edit-actions" id="shelfEditActions" hidden>
-                    <button class="header-btn nav-item" id="moveTileLeft" data-title="Move tile left">←</button>
-                    <button class="header-btn nav-item" id="moveTileRight" data-title="Move tile right">→</button>
                     <button class="header-btn nav-item" id="saveShelfOrder" data-title="Save tile order">Done</button>
                     <button class="header-btn nav-item" id="cancelShelfOrder" data-title="Cancel reordering">Cancel</button>
                 </div>
@@ -1602,8 +1599,6 @@
             renderAppsShelf();
             focusShelfTile(shelfEdit[0]);
         });
-        document.getElementById('moveTileLeft').addEventListener('click', function() { moveShelfTile(-1); });
-        document.getElementById('moveTileRight').addEventListener('click', function() { moveShelfTile(1); });
         document.getElementById('saveShelfOrder').addEventListener('click', function() { finishShelfEdit(true); });
         document.getElementById('cancelShelfOrder').addEventListener('click', function() { finishShelfEdit(false); });
         document.querySelectorAll('#shelfEditActions button, #reorderShelfBtn').forEach(function(button) {
