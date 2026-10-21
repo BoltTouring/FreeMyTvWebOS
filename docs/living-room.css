@@ -70,3 +70,9 @@ body:not(.editing-shelf) .shelf-hint { visibility: hidden; }
 
 .clock { color: var(--text-primary); }
 .title-detail-panel { --text-primary: #f5f5f7; --text-secondary: #c6cbd3; }
+
+/* Content must never enlarge the fixed TV stage or its grid tracks. */
+.container { grid-template-columns: minmax(0, 1fr); }
+.container > *, .picks-grid, .pick-card { min-width: 0; }
+.picks-grid { grid-template-columns: minmax(0, 3.05fr) minmax(0, 1fr) minmax(0, 1fr); }
+.picks-tab { width: 120px; flex: 0 0 120px; text-align: left; }

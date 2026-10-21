@@ -1684,7 +1684,15 @@
         const ambientGlow = document.getElementById('ambientGlow');
 
         function refreshMainNavList() {
+            const focused = document.querySelector('.nav-item.focused');
             mainNavItems = Array.from(document.querySelectorAll(shelfEdit ? '.shelf-wrapper .nav-item' : '.nav-item')).filter(function(el) { return el.offsetParent !== null; });
+            // Match the top controls' visual order, including the rightmost cog.
+            if (!shelfEdit) {
+                const topIds = ['tabExplore', 'tabMovies', 'tabShows', 'weatherWidget', 'customizeBtn'];
+                const top = topIds.map(function(id) { return document.getElementById(id); });
+                mainNavItems = top.filter(function(el) { return mainNavItems.includes(el); }).concat(mainNavItems.filter(function(el) { return !top.includes(el); }));
+            }
+            if (focused && mainNavItems.includes(focused)) curIndex = mainNavItems.indexOf(focused);
             if (mainNavItems.length > 0) {
                 curIndex = Math.min(curIndex, mainNavItems.length - 1);
                 // Default focus on first app tile if starting
@@ -1851,8 +1859,10 @@
         });
 
         // --- Trending Tabs: Movies / Shows ---
-        function switchPicksTab(tab) {
+        const picksHistory = [];
+        function switchPicksTab(tab, returning) {
             if (state.picksTab === tab) return;
+            if (!returning) picksHistory.push(state.picksTab);
             state.picksTab = tab;
             document.getElementById('tabExplore').classList.toggle('active', tab === 'explore');
             document.getElementById('tabMovies').classList.toggle('active', tab === 'movies');
@@ -2032,6 +2042,14 @@
                     e.preventDefault();
                 } else if (drawerOpen) {
                     closeDrawer();
+                    e.preventDefault();
+                } else if (picksHistory.length) {
+                    switchPicksTab(picksHistory.pop(), true);
+                    setMainFocus(document.getElementById('tab' + state.picksTab.charAt(0).toUpperCase() + state.picksTab.slice(1)));
+                    e.preventDefault();
+                } else {
+                    // Only the home screen delegates Back to LG's normal exit UI.
+                    if (window.webOS && typeof webOS.platformBack === 'function') webOS.platformBack();
                     e.preventDefault();
                 }
                 return;
