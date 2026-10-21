@@ -98,7 +98,7 @@ python scripts/install.py
 
 Click the **⚙️ Customize** button in the top-right corner of the dashboard using your remote:
 
-Use **Shelf order** in Customize to move selected tiles left or right with the remote, then choose **Save & Apply**. Cancel leaves the current order unchanged; Reset Defaults restores the original order when saved.
+Choose **Reorder** on the main shelf. Select a tile and press OK to pick it up, use Left/Right to move it, then OK to place it. Choose **Done** to save. Back or Cancel discards changes. Pointer users can select a tile and use the arrow buttons beside Done.
 
 Launch messages use the app or console name and report unavailable apps, failures, or no response after eight seconds. Repeated presses are ignored while a launch is pending; browser previews explain that launching requires an LG TV.
 
