@@ -332,6 +332,7 @@
             height: 100%;
             object-fit: contain;
         }
+        .app-icon img.tile-brand-logo { width: 76%; height: 76%; }
         .app-art-fallback {
             font-size: 25px;
             font-weight: 800;
@@ -1004,10 +1005,10 @@
         // Device artwork is bundled inline so HDMI tiles also work offline.
         const DEVICE_PRESETS = [
             { key: 'default', title: '', color: '#0a84ff', shape: 'input' },
-            { key: 'ps5', title: 'PS5', color: '#123ca6', shape: 'controller' },
-            { key: 'ps4', title: 'PS4', color: '#173070', shape: 'controller' },
-            { key: 'xbox', title: 'Xbox', color: '#107c10', shape: 'controller' },
-            { key: 'switch', title: 'Nintendo Switch', color: '#c82131', shape: 'handheld' },
+            { key: 'ps5', title: 'PS5', color: '#123ca6', logo: 'playstation5' },
+            { key: 'ps4', title: 'PS4', color: '#173070', logo: 'playstation4' },
+            { key: 'xbox', title: 'Xbox', color: '#107c10', logo: 'xbox' },
+            { key: 'switch', title: 'Nintendo Switch', color: '#c82131', logo: 'nintendoswitch' },
             { key: 'pc', title: 'Gaming PC', color: '#633ca6', shape: 'pc' }
         ];
         function readDeviceChoices() {
@@ -1023,13 +1024,32 @@
         }
         function deviceArtwork(shape) {
             const drawings = {
-                controller: '<path d="M35 37h50c12 0 20 12 23 34 2 15-7 19-16 9L80 69H40L28 80C19 90 10 86 12 71c3-22 11-34 23-34Z" fill="white"/><path d="M34 47v18m-9-9h18" stroke="#18243c" stroke-width="5" stroke-linecap="round"/><circle cx="83" cy="50" r="4" fill="#18243c"/><circle cx="94" cy="61" r="4" fill="#18243c"/><circle cx="52" cy="66" r="6" fill="#18243c"/><circle cx="70" cy="66" r="6" fill="#18243c"/>',
-                handheld: '<rect x="12" y="30" width="96" height="58" rx="14" fill="white"/><rect x="32" y="36" width="56" height="46" rx="3" fill="#18243c"/><circle cx="22" cy="48" r="5" fill="#18243c"/><circle cx="98" cy="69" r="5" fill="#18243c"/>',
                 pc: '<rect x="15" y="26" width="90" height="61" rx="6" fill="none" stroke="white" stroke-width="6"/><path d="M60 88v13m-22 0h44M24 75h72" stroke="white" stroke-width="6"/>',
                 input: '<path d="M25 34h70v37L80 86H40L25 71Z" fill="none" stroke="white" stroke-width="6"/><path d="M39 48v18m14-18v18m14-18v18m14-18v18" stroke="white" stroke-width="5"/>'
             };
             return '<svg viewBox="0 0 120 120" aria-hidden="true">' + drawings[shape] + '</svg>';
         }
+        const APP_LOGOS = {
+            'youtube.leanback.v4': 'youtube',
+            'netflix': 'netflix',
+            'cdp-30': 'plex',
+            'com.crunchyroll.webapp': 'crunchyroll',
+            'globoplaywebos': 'globoplay',
+            'amazon': 'amazonprime',
+            'com.disney.disneyplus-prod': 'disneyplus',
+            'spotify-beehive': 'spotify'
+        };
+        function addTileImage(container, url, branded) {
+            const img = document.createElement('img');
+            img.alt = '';
+            if (branded) img.className = 'tile-brand-logo';
+            const fallback = container.firstElementChild;
+            img.onload = function() { if (fallback) fallback.style.visibility = 'hidden'; };
+            img.onerror = function() { img.remove(); if (fallback) fallback.style.visibility = ''; };
+            img.src = url;
+            container.appendChild(img);
+        }
+
         function launchPointIcon(lp) {
             const icon = lp.largeIcon || lp.icon || '';
             if (/^(https?:|file:|data:image\/)/i.test(icon)) return icon;
@@ -1403,19 +1423,23 @@
                 iconDiv.style.background = app.bg || 'linear-gradient(135deg, #0a84ff, #0040a0)';
                 if (isHDMI(app)) {
                     iconDiv.style.background = device.color;
-                    iconDiv.innerHTML = deviceArtwork(device.shape);
+                    if (device.logo) {
+                        const fallback = document.createElement('span');
+                        fallback.className = 'app-art-fallback';
+                        fallback.textContent = device.title;
+                        iconDiv.appendChild(fallback);
+                        addTileImage(iconDiv, 'assets/brands/' + device.logo + '.svg', true);
+                    } else {
+                        iconDiv.innerHTML = deviceArtwork(device.shape);
+                    }
                 } else {
                     const fallback = document.createElement('span');
                     fallback.className = 'app-art-fallback';
                     fallback.textContent = app.title;
                     iconDiv.appendChild(fallback);
-                    if (app.iconUrl) {
-                        const img = document.createElement('img');
-                        img.alt = '';
-                        img.onload = function() { fallback.style.visibility = 'hidden'; };
-                        img.onerror = function() { img.remove(); fallback.style.visibility = ''; };
-                        img.src = app.iconUrl;
-                        iconDiv.appendChild(img);
+                    const logo = APP_LOGOS[app.id];
+                    if (logo || app.iconUrl) {
+                        addTileImage(iconDiv, logo ? 'assets/brands/' + logo + '.svg' : app.iconUrl, !!logo);
                     }
                 }
 
