@@ -581,6 +581,13 @@
             background: rgba(255, 255, 255, 0.16);
         }
 
+        .shelf-order { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .order-row { display: flex; align-items: center; gap: 6px; padding: 6px; }
+        .order-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .order-move { padding: 8px 10px; font-size: 12px; }
+        .order-move:disabled { opacity: 0.3; cursor: default; }
+        .app-tile[aria-busy="true"] { border-color: var(--accent); }
+
         .settings-row {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -820,7 +827,7 @@
 </head>
 <body>
     <div class="ambient-glow" id="ambientGlow"></div>
-    <div class="toast-msg" id="toastMsg">Launching...</div>
+    <div class="toast-msg" id="toastMsg" role="status" aria-live="polite">Launching...</div>
 
     <div class="container">
         <!-- Header -->
@@ -891,6 +898,9 @@
             <div>
                 <div class="modal-section-title">1. Select Apps for Glass Shelf (Click to Toggle)</div>
                 <div class="app-selector-grid" id="appSelectorGrid"></div>
+                <div class="modal-section-title" style="margin-top: 18px;">Shelf order</div>
+                <p style="color: var(--text-secondary); margin: 0 0 10px;">Use Move left / Move right to reorder your tiles. Choose Save &amp; Apply to keep the order.</p>
+                <div class="shelf-order" id="shelfOrder"></div>
             </div>
 
             <div>
@@ -1124,11 +1134,11 @@
 
         // --- Toast Helper ---
         const toastEl = document.getElementById('toastMsg');
-        function showToast(msg) {
+        function showToast(msg, duration) {
             toastEl.textContent = msg;
             toastEl.style.display = 'block';
             clearTimeout(window._toastTimer);
-            window._toastTimer = setTimeout(function() { toastEl.style.display = 'none'; }, 2400);
+            window._toastTimer = setTimeout(function() { toastEl.style.display = 'none'; }, duration || 2400);
         }
 
         // --- Theme Engine ---
@@ -1375,25 +1385,71 @@
         }
 
         // --- Native webOS App Launch ---
+        let pendingLaunch = null;
         function launchApp(appId) {
-            showToast('Launching ' + appId + '...');
-            try {
-                if (window.webOS && window.webOS.service) {
-                    webOS.service.request("luna://com.webos.applicationManager", {
-                        method: "launch",
-                        parameters: { id: appId },
-                        onSuccess: function() {},
-                        onFailure: function() {
-                            webOS.service.request("luna://org.webosbrew.hbchannel.service", {
-                                method: "exec",
-                                parameters: {
-                                    command: "luna-send-pub -n 1 luna://com.webos.applicationManager/launch '{\"id\":\"" + appId + "\"}'"
-                                }
-                            });
-                        }
-                    });
+            if (pendingLaunch) return; // Ignore repeated remote presses while a request is pending.
+            const app = state.catalog.find(function(item) { return item.id === appId; });
+            const title = app ? (devicePreset(app, state.hdmiDevices).title || app.title) : appId;
+            if (!window.webOS || !window.webOS.service || typeof window.webOS.service.request !== 'function') {
+                showToast('Open ' + title + ' on your LG TV. Launching is unavailable in this preview.', 5000);
+                return;
+            }
+            const request = { timer: null };
+            pendingLaunch = request;
+            const tiles = Array.from(document.querySelectorAll('.app-tile')).filter(function(tile) { return tile.dataset.id === appId; });
+            tiles.forEach(function(tile) { tile.setAttribute('aria-busy', 'true'); });
+            function finish(message) {
+                if (pendingLaunch !== request) return;
+                clearTimeout(request.timer);
+                pendingLaunch = null;
+                tiles.forEach(function(tile) { tile.removeAttribute('aria-busy'); });
+                showToast(message, 5000);
+            }
+            function failure(error) {
+                const detail = error && error.errorText || '';
+                if (/not installed|not found|does not exist|unknown app/i.test(detail)) {
+                    finish(title + ' is not installed or is unavailable on this TV.');
+                } else {
+                    finish('Could not open ' + title + '. Check that it is installed, then try again.');
                 }
-            } catch (e) {}
+            }
+            function fallback(originalError) {
+                if (pendingLaunch !== request) return;
+                // Only known app-ID characters may enter the legacy shell-based fallback.
+                if (!/^[a-zA-Z0-9._-]+$/.test(appId)) { failure(originalError); return; }
+                try {
+                    webOS.service.request('luna://org.webosbrew.hbchannel.service', {
+                        method: 'exec',
+                        parameters: { command: "luna-send-pub -n 1 luna://com.webos.applicationManager/launch '{\"id\":\"" + appId + "\"}'" },
+                        onSuccess: function(result) {
+                            // Successful exec alone does not confirm that the destination opened.
+                            if (pendingLaunch !== request) return;
+                            let reply = null;
+                            try { reply = JSON.parse(result && result.stdout || ''); } catch (e) {}
+                            if (reply && reply.returnValue === true) finish('Opening ' + title + '…');
+                            else if (reply && reply.returnValue === false) failure(reply);
+                            else finish('Could not confirm ' + title + ' opened. Please try again.');
+                        },
+                        onFailure: function() { failure(originalError); }
+                    });
+                } catch (e) { failure(originalError); }
+            }
+            showToast('Opening ' + title + '…', 8000);
+            request.timer = setTimeout(function() {
+                finish('No response opening ' + title + '. Please try again.');
+            }, 8000);
+            try {
+                webOS.service.request('luna://com.webos.applicationManager', {
+                    method: 'launch',
+                    parameters: { id: appId },
+                    onSuccess: function(result) {
+                        if (pendingLaunch !== request) return;
+                        if (result && result.returnValue === false) fallback(result);
+                        else finish('Opening ' + title + '…');
+                    },
+                    onFailure: fallback
+                });
+            } catch (e) { failure(e); }
         }
 
         // --- Render App Shelf & Trending Row ---
@@ -1608,6 +1664,9 @@
                     const current = DEVICE_PRESETS.indexOf(devicePreset(app, tempDevices));
                     tempDevices[app.id] = DEVICE_PRESETS[(current + 1) % DEVICE_PRESETS.length].key;
                     updateLabel();
+                    renderShelfOrder();
+                    refreshModalNavList();
+                    setModalFocus(button);
                 });
                 container.appendChild(button);
             });
@@ -1643,10 +1702,48 @@
                 });
                 container.appendChild(item);
             });
+            renderShelfOrder();
+        }
+
+        function renderShelfOrder() {
+            const container = document.getElementById('shelfOrder');
+            container.innerHTML = '';
+            tempFavorites.forEach(function(id, index) {
+                const app = state.catalog.find(function(item) { return item.id === id; });
+                const title = app ? (devicePreset(app, tempDevices).title || app.title) : id;
+                const row = document.createElement('div');
+                row.className = 'order-row';
+                row.dataset.id = id;
+                const label = document.createElement('span');
+                label.className = 'order-name';
+                label.textContent = (index + 1) + '. ' + title;
+                row.appendChild(label);
+                [-1, 1].forEach(function(direction) {
+                    const button = document.createElement('button');
+                    button.className = 'app-toggle-item order-move modal-nav';
+                    button.textContent = direction < 0 ? '← Move left' : 'Move right →';
+                    button.setAttribute('aria-label', 'Move ' + title + (direction < 0 ? ' left' : ' right'));
+                    button.dataset.direction = String(direction);
+                    button.disabled = index + direction < 0 || index + direction >= tempFavorites.length;
+                    button.addEventListener('click', function() {
+                        const destination = index + direction;
+                        if (destination < 0 || destination >= tempFavorites.length) return;
+                        tempFavorites.splice(index, 1);
+                        tempFavorites.splice(destination, 0, id);
+                        renderShelfOrder();
+                        refreshModalNavList();
+                        const movedRow = Array.from(container.children).find(function(item) { return item.dataset.id === id; });
+                        const buttons = Array.from(movedRow.querySelectorAll('button:not(:disabled)'));
+                        setModalFocus(buttons.find(function(item) { return item.dataset.direction === String(direction); }) || buttons[0]);
+                    });
+                    row.appendChild(button);
+                });
+                container.appendChild(row);
+            });
         }
 
         function refreshModalNavList() {
-            modalNavItems = Array.from(settingsModal.querySelectorAll('.modal-nav'));
+            modalNavItems = Array.from(settingsModal.querySelectorAll('.modal-nav:not(:disabled)'));
             modalIndex = Math.min(modalIndex, modalNavItems.length - 1);
             setModalFocus(modalNavItems[modalIndex]);
         }
