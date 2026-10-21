@@ -98,6 +98,10 @@ python scripts/install.py
 
 Click the **⚙️ Customize** button in the top-right corner of the dashboard using your remote:
 
+Under **HDMI Devices**, press a port to cycle through HDMI, PS5, PS4, Xbox, Nintendo Switch, and Gaming PC, then choose **Save & Apply**. These are manual, per-port choices; connected consoles are not automatically detected. The tile keeps launching the same HDMI input. Cancel discards pending changes, and Reset Defaults clears device choices when saved.
+
+The shelf displays larger artwork and uses app icons supplied by webOS when accessible, including for built-in catalog entries such as Netflix. Missing or unreadable icons fall back to a readable app name.
+
 | Setting | What It Does |
 |---|---|
 | **App Shelf Selector** | Auto-discovers apps installed on your TV (`listLaunchPoints`) so you can pick up to 8 favorites for your glass dock. |
