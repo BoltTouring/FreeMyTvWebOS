@@ -824,6 +824,7 @@
             margin-top: 6px;
         }
     </style>
+    <link rel="stylesheet" href="living-room.css">
 </head>
 <body>
     <div class="ambient-glow" id="ambientGlow"></div>
@@ -836,20 +837,20 @@
                 <div class="brand-logo">
                     <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
                 </div>
-                <div class="brand-title">Free My TV</div>
+                <div class="brand-title">For You</div>
                 <div class="tag-pill" id="themeBadge">60 FPS • Onboard</div>
             </div>
             <div class="header-info">
-                <button class="header-btn nav-item" id="customizeBtn" data-tag="Personalize" data-title="Customize Shelf & Settings" data-desc="Choose which installed TV apps appear on your shelf, configure weather city, and TMDB key.">
-                    <span>⚙️ Customize</span>
+                <button class="header-btn nav-item" id="customizeBtn" aria-label="Customize" title="Customize" data-tag="Personalize" data-title="Customize Shelf & Settings" data-desc="Choose which installed TV apps appear on your shelf, configure weather city, and TMDB key.">
+                    <span aria-hidden="true">⚙</span>
                 </button>
-                <div class="weather-widget nav-item" id="weatherWidget" data-tag="Live Forecast" data-title="Local Weather & Sunset" data-desc="Live temperature and sky conditions powered by Open-Meteo.">
+                <button class="weather-widget nav-item" type="button" aria-label="Weather" id="weatherWidget" data-tag="Live Forecast" data-title="Local Weather & Sunset" data-desc="Live temperature and sky conditions powered by Open-Meteo.">
                     <span id="weatherIcon">☀️</span>
                     <div>
                         <div id="weatherText">Loading...</div>
                         <div class="weather-sub" id="weatherSub">Auto-detecting</div>
                     </div>
-                </div>
+                </button>
                 <div class="clock-group">
                     <div class="date" id="dateText">Mon, Oct 19</div>
                     <div class="clock" id="clockText">20:30</div>
@@ -864,6 +865,19 @@
             <div class="hero-desc" id="heroDesc">Navigate smoothly with Magic Remote D-Pad or pointer. Launch apps in 100ms with zero ads.</div>
         </div>
 
+        <!-- Trending Picks Row -->
+        <div class="picks-section">
+            <div class="picks-top-bar">
+                <div class="picks-header">Discover</div>
+                <div class="picks-tabs" aria-label="Discover categories">
+                    <button class="picks-tab nav-item active" id="tabExplore" data-title="Explore" data-desc="A selection for your next watch.">Explore</button>
+                    <button class="picks-tab nav-item" id="tabMovies" data-tag="Trending" data-title="Movies" data-desc="Switch the row below to this week's trending movies.">Movies</button>
+                    <button class="picks-tab nav-item" id="tabShows" data-tag="Trending" data-title="Shows" data-desc="Switch the row below to this week's trending TV shows.">Shows</button>
+                </div>
+                <div class="picks-source-badge" id="picksSourceBadge">Live Feed</div>
+            </div>
+            <div class="picks-grid" id="picksGrid"></div>
+        </div>
         <!-- Glass Shelf: Apps -->
         <div class="shelf-wrapper">
             <div class="shelf-top-bar">
@@ -878,17 +892,20 @@
             <div class="shelf-grid" id="appsGrid"></div>
         </div>
 
-        <!-- Trending Picks Row -->
-        <div class="picks-section">
-            <div class="picks-top-bar">
-                <div class="picks-header">Trending This Week</div>
-                <div class="picks-tabs">
-                    <button class="picks-tab nav-item active" id="tabMovies" data-tag="Trending" data-title="Movies" data-desc="Switch the row below to this week's trending movies.">Movies</button>
-                    <button class="picks-tab nav-item" id="tabShows" data-tag="Trending" data-title="Shows" data-desc="Switch the row below to this week's trending TV shows.">Shows</button>
-                </div>
-                <div class="picks-source-badge" id="picksSourceBadge">Live Feed</div>
+
+    </div>
+
+    <div class="modal-backdrop" id="titleDetails" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+        <div class="title-detail-panel">
+            <div class="detail-art" id="detailArt"></div>
+            <div class="detail-copy">
+                <div class="detail-kicker" id="detailCategory"></div>
+                <h2 id="detailTitle"></h2>
+                <p id="detailDescription"></p>
+                <p class="detail-note">Open a streaming app to search for this title. Availability varies by service and region.</p>
+                <div id="detailApps"></div>
+                <button class="btn-secondary detail-nav" id="closeTitleDetails">Back</button>
             </div>
-            <div class="picks-grid" id="picksGrid"></div>
         </div>
     </div>
 
@@ -923,9 +940,9 @@
                         <label>Theme Mode</label>
                         <select class="field-input modal-nav" id="cfgTheme">
                             <option value="auto">Auto (Follows Sunset)</option>
-                            <option value="night">Deep Midnight (Default)</option>
+                            <option value="night">Dark</option>
                             <option value="oled">Pure OLED Black</option>
-                            <option value="day">Daylight Blue</option>
+                            <option value="day">Light</option>
                         </select>
                     </div>
                     <div class="field-group">
@@ -1087,17 +1104,16 @@
         ];
 
         const FALLBACK_MOVIES = [
-            { title: 'Dune: Part Two', badge: 'Sci-Fi • 8.8★', service: 'Watch on Max / Netflix', app: 'netflix', desc: 'Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators.', poster: 'https://image.tmdb.org/t/p/w300/8b8R8l88Qje9dn9OE8PY05Nxl1X.jpg', color: '#e5a00d' },
-            { title: 'Oppenheimer', badge: 'Drama • 8.3★', service: 'Watch on Prime Video', app: 'amazon', desc: 'The story of American scientist J. Robert Oppenheimer and his role in developing the atomic bomb.', poster: '', color: '#00a8e1' },
-            { title: 'Spider-Man: Across the Spider-Verse', badge: 'Animation • 8.6★', service: 'Watch on Netflix', app: 'netflix', desc: 'Miles Morales catapults across the Multiverse to team up with Gwen Stacy and a new crew of Spider-People.', poster: '', color: '#5856d6' },
+            { title: 'Dune: Part Two', badge: 'Sci-Fi • 8.8★', service: 'Movie · Science fiction', app: 'netflix', desc: 'Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators.', poster: 'assets/editorial/dune.jpg', color: '#e5a00d' },
+            { title: 'Oppenheimer', badge: 'Drama • 8.3★', service: 'Movie · Drama', app: 'amazon', desc: 'The story of American scientist J. Robert Oppenheimer and his role in developing the atomic bomb.', poster: 'assets/editorial/oppenheimer.jpg', color: '#00a8e1' },
+            { title: 'Spider-Man: Across the Spider-Verse', badge: 'Animation • 8.6★', service: 'Movie · Animation', app: 'netflix', desc: 'Miles Morales catapults across the Multiverse to team up with Gwen Stacy and a new crew of Spider-People.', poster: 'assets/editorial/spiderverse.jpg', color: '#5856d6' },
             { title: 'Barbie', badge: 'Comedy • 7.0★', service: 'Watch on Max', app: 'netflix', desc: 'Barbie and Ken venture from Barbie Land to the real world in search of true happiness.', poster: '', color: '#ff375f' }
         ];
 
-        const FALLBACK_SHOWS = [
-            { title: 'Severance', badge: 'Thriller • 8.7★', service: 'Trending Series', app: 'netflix', desc: 'Mark leads a team of office workers whose memories have been surgically divided between work and personal lives.', poster: 'https://image.tmdb.org/t/p/w300/e9Lra4Wv77L84a0d8lEwB47zYqS.jpg', color: '#0a84ff' },
-            { title: 'Demon Slayer: Infinity', badge: 'Anime • 8.9★', service: 'Watch on Crunchyroll', app: 'com.crunchyroll.webapp', desc: 'Tanjiro and the Hashira face the Upper Rank demons in the final stronghold.', poster: 'https://image.tmdb.org/t/p/w300/xUfRZu2mi8jH6SzQEJGP6tjBuYj.jpg', color: '#f47521' },
-            { title: 'The Last of Us', badge: 'Drama • 8.8★', service: 'Watch on Max', app: 'netflix', desc: 'Joel and Ellie navigate a brutal, infected America in search of a cure.', poster: '', color: '#e5a00d' },
-            { title: 'Stranger Things', badge: 'Sci-Fi • 8.6★', service: 'Watch on Netflix', app: 'netflix', desc: 'A group of kids uncover supernatural mysteries in the small town of Hawkins, Indiana.', poster: '', color: '#ff0000' }
+        const EXPLORE_PICKS = [
+            { title: 'Dark Matter', badge: 'Series · Science fiction', service: 'Series · Science fiction · 2024', desc: 'A physicist is pulled into an alternate version of his life and must find his way back to the family he knows.', poster: 'assets/editorial/dark-matter.jpg', color: '#51767b' },
+            { title: 'Severance', badge: 'Series · Thriller', service: 'Series · Thriller', desc: 'A team of office workers discovers the unsettling consequences of separating their work memories from their personal lives.', poster: 'assets/editorial/severance.jpg', color: '#5c8d9c' },
+            { title: 'The Last of Us', badge: 'Series · Drama', service: 'Series · Drama', desc: 'Two survivors travel across a changed world, finding danger, loyalty and an unexpected bond along the way.', poster: 'assets/editorial/last-of-us.jpg', color: '#7a795b' }
         ];
 
         // --- Persistent State ---
@@ -1110,12 +1126,12 @@
             theme: localStorage.getItem('fmtv_theme') || 'auto',
             tmdbKey: localStorage.getItem('fmtv_tmdb_key') || '',
             catalog: DEFAULT_CATALOG.slice(),
-            picksTab: 'movies',
+            picksTab: 'explore',
             hourlyForecast: [],
             sunrise: '',
             sunset: '',
             isSunset: false,
-            isNight: true
+            isNight: new Date().getHours() < 6 || new Date().getHours() >= 19
         };
 
         // --- Clock & Date ---
@@ -1273,7 +1289,7 @@
 
                 renderDrawerForecast();
             } catch (err) {
-                document.getElementById('weatherText').textContent = '22°C • Clear';
+                document.getElementById('weatherText').textContent = 'Weather unavailable';
                 document.getElementById('weatherSub').textContent = state.city || 'Offline Mode';
             }
         }
@@ -1282,6 +1298,7 @@
         async function fetchTrendingPicks() {
             const badge = document.getElementById('picksSourceBadge');
             const tab = state.picksTab;
+            if (tab === 'explore') { badge.textContent = 'Featured'; renderPicks(EXPLORE_PICKS); return; }
             const tmdbMediaPath = tab === 'shows' ? 'tv' : 'movie';
             try {
                 // 1. If user provided a TMDB API Key, fetch live from TMDB for the active tab
@@ -1304,7 +1321,7 @@
                                 service: 'TMDB Trending',
                                 app: 'netflix',
                                 desc: item.overview || 'Trending worldwide this week.',
-                                poster: item.poster_path ? 'https://image.tmdb.org/t/p/w300' + item.poster_path : '',
+                                poster: (item.backdrop_path || item.poster_path) ? 'https://image.tmdb.org/t/p/w1280' + (item.backdrop_path || item.poster_path) : '',
                                 color: '#0a84ff'
                             };
                         });
@@ -1349,7 +1366,7 @@
 
             if (tab !== state.picksTab) return;
             badge.textContent = 'Curated Picks';
-            renderPicks(tab === 'shows' ? FALLBACK_SHOWS : FALLBACK_MOVIES);
+            renderPicks(tab === 'shows' ? EXPLORE_PICKS : FALLBACK_MOVIES);
         }
 
         // --- Discover Installed Apps from LG webOS ---
@@ -1529,8 +1546,10 @@
             const grid = document.getElementById('picksGrid');
             grid.innerHTML = '';
 
-            picks.forEach(function(pick) {
-                const card = document.createElement('div');
+            picks.slice(0, 3).forEach(function(pick) {
+                const card = document.createElement('button');
+                card.type = 'button';
+                card.setAttribute('aria-label', 'About ' + pick.title);
                 card.className = 'pick-card nav-item';
                 card.dataset.app = pick.app;
                 card.dataset.tag = pick.badge;
@@ -1546,21 +1565,66 @@
 
                 const meta = document.createElement('div');
                 meta.className = 'pick-meta';
-                meta.innerHTML =
-                    '<div class="pick-badge">' + pick.badge + '</div>' +
-                    '<div class="pick-title">' + pick.title + '</div>' +
-                    '<div class="pick-service">' + pick.service + '</div>';
+                const pickTitle = document.createElement('div');
+                pickTitle.className = 'pick-title';
+                pickTitle.textContent = pick.title;
+                const pickService = document.createElement('div');
+                pickService.className = 'pick-service';
+                pickService.textContent = pick.badge || 'Discover';
+                meta.appendChild(pickTitle);
+                meta.appendChild(pickService);
 
                 card.appendChild(poster);
                 card.appendChild(meta);
 
                 card.addEventListener('mouseenter', function() { setMainFocus(card); });
-                card.addEventListener('click', function() { launchApp(pick.app); });
+                card.addEventListener('click', function() { openTitleDetails(pick, card); });
                 grid.appendChild(card);
             });
 
             refreshMainNavList();
         }
+
+        let detailOpen = false;
+        let detailOrigin = null;
+        let detailIndex = 0;
+        let detailButtons = [];
+        function focusDetail(index) {
+            detailIndex = (index + detailButtons.length) % detailButtons.length;
+            detailButtons.forEach(function(button) { button.classList.remove('focused'); });
+            detailButtons[detailIndex].classList.add('focused');
+            detailButtons[detailIndex].focus();
+        }
+        function openTitleDetails(pick, origin) {
+            if (shelfEdit) return;
+            detailOrigin = origin;
+            document.getElementById('detailTitle').textContent = pick.title;
+            document.getElementById('detailCategory').textContent = pick.badge || 'Discover';
+            document.getElementById('detailDescription').textContent = pick.desc;
+            document.getElementById('detailArt').style.backgroundImage = pick.poster ? 'url("' + pick.poster.replace(/"/g, '%22') + '")' : 'none';
+            const apps = document.getElementById('detailApps');
+            apps.innerHTML = '';
+            state.favorites.filter(function(id) { return APP_LOGOS[id]; }).forEach(function(id) {
+                const app = state.catalog.find(function(item) { return item.id === id; });
+                if (!app) return;
+                const button = document.createElement('button');
+                button.className = 'btn-secondary detail-nav';
+                button.textContent = app.title;
+                button.addEventListener('click', function() { launchApp(id); });
+                apps.appendChild(button);
+            });
+            detailOpen = true;
+            document.getElementById('titleDetails').classList.add('active');
+            detailButtons = Array.from(document.querySelectorAll('#titleDetails .detail-nav'));
+            focusDetail(0);
+        }
+        function closeTitleDetails() {
+            detailOpen = false;
+            document.getElementById('titleDetails').classList.remove('active');
+            if (detailOrigin && detailOrigin.isConnected) setMainFocus(detailOrigin);
+            else refreshMainNavList();
+        }
+        document.getElementById('closeTitleDetails').addEventListener('click', closeTitleDetails);
 
         function focusShelfTile(id) {
             const tile = Array.from(document.querySelectorAll('.app-tile')).find(function(el) { return el.dataset.id === id; });
@@ -1584,6 +1648,7 @@
                 state.favorites = shelfEdit.slice();
             }
             shelfEdit = null;
+            document.body.classList.remove('editing-shelf');
             movingTileId = null;
             document.getElementById('reorderShelfBtn').hidden = false;
             document.getElementById('shelfEditActions').hidden = true;
@@ -1593,6 +1658,7 @@
         }
         document.getElementById('reorderShelfBtn').addEventListener('click', function() {
             shelfEdit = state.favorites.slice();
+            document.body.classList.add('editing-shelf');
             movingTileId = null;
             this.hidden = true;
             document.getElementById('shelfEditActions').hidden = false;
@@ -1631,7 +1697,7 @@
         }
 
         function setMainFocus(item) {
-            if (!item || (shelfEdit && !item.closest('.shelf-wrapper'))) return;
+            if (detailOpen || !item || (shelfEdit && !item.closest('.shelf-wrapper'))) return;
             document.querySelectorAll('.nav-item.focused').forEach(function(i) { i.classList.remove('focused'); });
             item.classList.add('focused');
             item.focus({ preventScroll: true });
@@ -1690,7 +1756,7 @@
         let tempDevices = {};
 
         function openSettingsModal() {
-            if (shelfEdit) return;
+            if (shelfEdit || detailOpen) return;
             modalOpen = true;
             tempFavorites = state.favorites.slice();
             tempDevices = Object.assign({}, state.hdmiDevices);
@@ -1788,10 +1854,13 @@
         function switchPicksTab(tab) {
             if (state.picksTab === tab) return;
             state.picksTab = tab;
+            document.getElementById('tabExplore').classList.toggle('active', tab === 'explore');
             document.getElementById('tabMovies').classList.toggle('active', tab === 'movies');
             document.getElementById('tabShows').classList.toggle('active', tab === 'shows');
             fetchTrendingPicks();
         }
+        document.getElementById('tabExplore').addEventListener('click', function() { switchPicksTab('explore'); });
+        document.getElementById('tabExplore').addEventListener('mouseenter', function() { setMainFocus(this); });
         document.getElementById('tabMovies').addEventListener('click', function() { switchPicksTab('movies'); });
         document.getElementById('tabShows').addEventListener('click', function() { switchPicksTab('shows'); });
         document.getElementById('tabMovies').addEventListener('mouseenter', function() {
@@ -1828,7 +1897,7 @@
         }
 
         function openDrawer() {
-            if (shelfEdit) return;
+            if (shelfEdit || detailOpen) return;
             drawerOpen = true;
             weatherDrawer.classList.add('active');
             closeDrawerBtn.classList.add('focused');
@@ -1882,7 +1951,7 @@
         document.addEventListener('mousedown', markActivity);
 
         setInterval(function() {
-            if (!screensaverOn && !modalOpen && !drawerOpen && Date.now() - lastActivity > IDLE_TIMEOUT_MS) {
+            if (!screensaverOn && !modalOpen && !drawerOpen && !detailOpen && Date.now() - lastActivity > IDLE_TIMEOUT_MS) {
                 enterScreensaver();
             }
         }, 10000);
@@ -1930,6 +1999,14 @@
                 return;
             }
 
+            if (detailOpen) {
+                if (e.keyCode === 461 || e.key === 'Escape' || e.key === 'GoBack') closeTitleDetails();
+                else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') focusDetail(detailIndex + 1);
+                else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') focusDetail(detailIndex - 1);
+                else if (e.key === 'Enter') detailButtons[detailIndex].click();
+                else return;
+                e.preventDefault(); return;
+            }
             if (shelfEdit) {
                 if (e.keyCode === 461 || e.key === 'Escape' || e.key === 'GoBack') {
                     finishShelfEdit(false); e.preventDefault(); return;
@@ -2010,9 +2087,18 @@
             }
         });
 
+        function fitHomeStage() {
+            const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+            const stage = document.querySelector('.container');
+            stage.style.transform = 'scale(' + scale + ')';
+            stage.style.left = ((window.innerWidth - 1920 * scale) / 2) + 'px';
+            stage.style.top = ((window.innerHeight - 1080 * scale) / 2) + 'px';
+        }
+        window.addEventListener('resize', fitHomeStage);
+        fitHomeStage();
         // --- Boot Sequence ---
         renderAppsShelf();
-        renderPicks(FALLBACK_MOVIES);
+        renderPicks(EXPLORE_PICKS);
         applyTheme();
         fetchWeather();
         fetchTrendingPicks();
